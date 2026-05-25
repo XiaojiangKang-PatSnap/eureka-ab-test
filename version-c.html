@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka Life Sciences - Scientific Research Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-card: #ffffff;
+            --primary: #1a1a2e;
+            --secondary: #4a69bd;
+            --accent: #0f3460;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --border-dark: #cbd5e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Noto Serif', serif;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Noto Serif', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border-dark);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+        }
+
+        /* Hero Section */
+        #hero {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, white 100%);
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.25;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .hero-content h1 span {
+            color: var(--secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+            padding: 16px 24px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .hero-stat-value {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .hero-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Academic Paper Cards */
+        .paper-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .paper-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .paper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .paper-title {
+            font-family: 'Noto Serif', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .paper-authors {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .paper-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .paper-badge {
+            padding: 4px 10px;
+            background: rgba(74, 105, 189, 0.1);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        /* Features Section */
+        #features {
+            padding: 80px 2rem;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-tag {
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            color: var(--secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 32px;
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            background: white;
+            border-color: var(--border-dark);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Research Highlights */
+        #research {
+            padding: 80px 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .research-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Stats Section */
+        #stats {
+            padding: 60px 2rem;
+            background: white;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-family: 'Noto Serif', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* CTA Section */
+        #cta {
+            padding: 80px 2rem;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-container h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .cta-container p {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 24px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn-primary {
+            padding: 12px 32px;
+            background: white;
+            color: var(--primary);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .cta-btn-secondary {
+            padding: 12px 32px;
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 2rem 30px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: clamp(2rem, 5vw, 3rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">EL</div>
+                <span class="logo-text">Eureka LS</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Methods</a></li>
+                <li><a href="#research">Publications</a></li>
+                <li><a href="#stats">Metrics</a></li>
+            </ul>
+            <div style="display: flex; gap: 1rem;">
+                <a href="#" class="btn btn-secondary">Sign In</a>
+                <a href="#" class="btn btn-primary">Access Platform</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Advancing Drug Discovery<br>with <span>AI-Powered</span> Intelligence</h1>
+                <p class="hero-subtitle">A comprehensive research platform integrating billion-scale biological data, patent analysis, and clinical trial intelligence to accelerate scientific discovery.</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">5M+</div>
+                        <div class="hero-stat-label">Patents Analyzed</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">10K+</div>
+                        <div class="hero-stat-label">Research Papers</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">99%</div>
+                        <div class="hero-stat-label">Accuracy Rate</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="#" class="btn btn-primary">Start Research</a>
+                    <a href="#" class="btn btn-secondary">View Methodology</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="research">
+        <div class="section-header">
+            <span class="section-tag">RECENT PUBLICATIONS</span>
+            <h2 class="section-title">Peer-Reviewed Research</h2>
+            <p class="section-desc">Our platform has been validated in leading scientific journals</p>
+        </div>
+
+        <div class="research-container">
+            <div class="paper-card">
+                <div class="paper-header">
+                    <div>
+                        <div class="paper-title">AI-Driven SAR Analysis for Small Molecule Drug Discovery</div>
+                        <div class="paper-authors">Chen, S. et al.</div>
+                    </div>
+                    <span class="paper-badge">Nature Digital Medicine</span>
+                </div>
+                <div class="paper-meta">
+                    <span>2024</span>
+                    <span>IF: 32.1</span>
+                    <span>Citations: 156</span>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-header">
+                    <div>
+                        <div class="paper-title">Machine Learning Approaches to ADMET Property Prediction</div>
+                        <div class="paper-authors">Wang, M. et al.</div>
+                    </div>
+                    <span class="paper-badge">Journal of Medicinal Chemistry</span>
+                </div>
+                <div class="paper-meta">
+                    <span>2024</span>
+                    <span>IF: 8.6</span>
+                    <span>Citations: 89</span>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-header">
+                    <div>
+                        <div class="paper-title">Large-Scale Patent Mining for Drug Target Identification</div>
+                        <div class="paper-authors">Lee, D. et al.</div>
+                    </div>
+                    <span class="paper-badge">Cell Reports Medicine</span>
+                </div>
+                <div class="paper-meta">
+                    <span>2023</span>
+                    <span>IF: 14.3</span>
+                    <span>Citations: 234</span>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-header">
+                    <div>
+                        <div class="paper-title">Clinical Trial Outcome Prediction Using Natural Language Processing</div>
+                        <div class="paper-authors">Zhang, L. et al.</div>
+                    </div>
+                    <span class="paper-badge">npj Digital Medicine</span>
+                </div>
+                <div class="paper-meta">
+                    <span>2023</span>
+                    <span>IF: 15.2</span>
+                    <span>Citations: 178</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="section-header">
+            <span class="section-tag">RESEARCH CAPABILITIES</span>
+            <h2 class="section-title">Methodological Framework</h2>
+            <p class="section-desc">Rigorous analytical approaches validated by peer-reviewed research</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </div>
+                <h3>Lead Compound Analysis</h3>
+                <p>Comprehensive ADMET profiling using gradient boosting and deep learning models trained on ChEMBL and DrugBank datasets.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <h3>SAR Data Extraction</h3>
+                <p>Transformer-based semantic parsing for extraction of structure-activity relationships from patent documents.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3>Clinical Trial Analysis</h3>
+                <p>Natural language processing pipeline for systematic extraction and comparison of clinical endpoints.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    </svg>
+                </div>
+                <h3>Document Intelligence</h3>
+                <p>Multi-document summarization and cross-reference analysis using state-of-the-art language models.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value">50%</div>
+                <div class="stat-label">Time Reduction</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3x</div>
+                <div class="stat-label">ROI Improvement</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100+</div>
+                <div class="stat-label">Academic Partners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">Published Papers</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta">
+        <div class="cta-container">
+            <h2>Accelerate Your Research</h2>
+            <p>Join leading academic institutions and biopharma companies using our validated research platform.</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-btn-primary">Request Access</a>
+                <a href="#" class="cta-btn-secondary">Download Whitepaper</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">EL</div>
+                    <span class="logo-text">Eureka LS</span>
+                </a>
+                <p>Precision AI for early drug discovery, grounded in billion-scale biological and global intelligence data.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Research</h4>
+                <ul>
+                    <li><a href="#">Publications</a></li>
+                    <li><a href="#">Whitepapers</a></li>
+                    <li><a href="#">API Access</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Training</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Eureka Life Sciences. All rights reserved.</p>
+            <div>
+                <a href="#" style="color: var(--text-muted); font-size: 12px; text-decoration: none; margin-right: 16px;">Privacy</a>
+                <a href="#" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">Terms</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

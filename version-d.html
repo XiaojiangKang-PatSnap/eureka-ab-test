@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka Life Sciences - Business Intelligence for Pharma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --primary: #f97316;
+            --secondary: #fbbf24;
+            --accent: #fb923c;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient-primary: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--bg-primary);
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+        }
+
+        /* Hero Section */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 2rem 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(249, 115, 22, 0.15) 0%, transparent 50%);
+        }
+
+        #hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            position: relative;
+            z-index: 2;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-content h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-highlight {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--bg-primary);
+        }
+
+        .highlight-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .highlight-text strong {
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* ROI Cards */
+        .roi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .roi-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .roi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .roi-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Features Section */
+        #features {
+            padding: 80px 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-tag {
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--bg-primary);
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .feature-metrics {
+            display: flex;
+            gap: 16px;
+        }
+
+        .feature-metric {
+            padding: 8px 12px;
+            background: rgba(249, 115, 22, 0.1);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Case Study Section */
+        #cases {
+            padding: 80px 2rem;
+        }
+
+        .case-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .case-content {
+            padding: 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .case-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .case-stat {
+            text-align: center;
+            padding: 16px;
+            background: rgba(249, 115, 22, 0.1);
+            border-radius: 10px;
+        }
+
+        .case-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .case-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* CTA Section */
+        #cta {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-container h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--bg-primary);
+            margin-bottom: 16px;
+        }
+
+        .cta-container p {
+            font-size: 1.125rem;
+            color: rgba(15, 23, 42, 0.8);
+            margin-bottom: 24px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn-primary {
+            padding: 12px 32px;
+            background: var(--bg-primary);
+            color: white;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .cta-btn-secondary {
+            padding: 12px 32px;
+            background: transparent;
+            color: var(--bg-primary);
+            border: 2px solid var(--bg-primary);
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 2rem 30px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .case-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: clamp(2rem, 5vw, 3rem);
+            }
+
+            .case-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">EL</div>
+                <span class="logo-text">Eureka LS</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Solutions</a></li>
+                <li><a href="#cases">Case Studies</a></li>
+                <li><a href="#stats">ROI</a></li>
+            </ul>
+            <div style="display: flex; gap: 1rem;">
+                <a href="#" class="btn btn-secondary">Sign In</a>
+                <a href="#" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Drive Pharma R&D<br><span>ROI</span></h1>
+                <p class="hero-subtitle">Enterprise-grade AI platform that delivers measurable business outcomes for biopharma organizations.</p>
+                
+                <div class="hero-highlight">
+                    <div class="highlight-icon">💰</div>
+                    <div class="highlight-text"><strong>3x ROI Improvement</strong> - Average across 100+ enterprise clients</div>
+                </div>
+
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <a href="#" class="btn btn-primary">Request Demo →</a>
+                    <a href="#" class="btn btn-secondary">View ROI Calculator</a>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                <div class="roi-card">
+                    <div class="roi-value">50%</div>
+                    <div class="roi-label">Time Reduction</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">3x</div>
+                    <div class="roi-label">ROI Improvement</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">99%</div>
+                    <div class="roi-label">Accuracy Rate</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">100+</div>
+                    <div class="roi-label">Enterprise Clients</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="section-header">
+            <span class="section-tag">BUSINESS SOLUTIONS</span>
+            <h2 class="section-title">Enterprise-Grade Solutions</h2>
+            <p class="section-desc">Drive measurable business outcomes across your R&D pipeline</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </div>
+                <h3>Lead Optimization</h3>
+                <p>Reduce candidate selection time by 60% while improving drug-likeness predictions.</p>
+                <div class="feature-metrics">
+                    <span class="feature-metric">-60% Time</span>
+                    <span class="feature-metric">+40% Success</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <h3>IP Strategy</h3>
+                <p>Identify patent opportunities and risks early, reducing legal costs by 40%.</p>
+                <div class="feature-metrics">
+                    <span class="feature-metric">-40% Costs</span>
+                    <span class="feature-metric">+80% Coverage</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3>Competitive Intelligence</h3>
+                <p>Real-time monitoring of competitor pipelines and market movements.</p>
+                <div class="feature-metrics">
+                    <span class="feature-metric">24/7 Monitoring</span>
+                    <span class="feature-metric">95% Coverage</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    </svg>
+                </div>
+                <h3>Clinical Benchmarking</h3>
+                <p>Compare clinical outcomes head-to-head to inform portfolio decisions.</p>
+                <div class="feature-metrics">
+                    <span class="feature-metric">4x Faster</span>
+                    <span class="feature-metric">+90% Data</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cases">
+        <div class="section-header">
+            <span class="section-tag">CASE STUDY</span>
+            <h2 class="section-title">Proven ROI</h2>
+        </div>
+
+        <div class="case-container">
+            <div class="case-content">
+                <div>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">Fortune 500 Pharma Client</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">
+                        A leading biopharma company implemented Eureka LS across their early discovery pipeline. Within 6 months, they achieved:
+                    </p>
+                </div>
+                <div class="case-stats">
+                    <div class="case-stat">
+                        <div class="case-stat-value">3x</div>
+                        <div class="case-stat-label">ROI Improvement</div>
+                    </div>
+                    <div class="case-stat">
+                        <div class="case-stat-value">50%</div>
+                        <div class="case-stat-label">Time Reduction</div>
+                    </div>
+                    <div class="case-stat">
+                        <div class="case-stat-value">$2.4M</div>
+                        <div class="case-stat-label">Annual Savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta">
+        <div class="cta-container">
+            <h2>Maximize Your R&D Investment</h2>
+            <p>Join 100+ enterprise clients driving measurable ROI with Eureka LS.</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-btn-primary">Schedule Demo</a>
+                <a href="#" class="cta-btn-secondary">Download ROI Report</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">EL</div>
+                    <span class="logo-text">Eureka LS</span>
+                </a>
+                <p>Enterprise-grade AI platform delivering measurable business outcomes for biopharma R&D.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Solutions</h4>
+                <ul>
+                    <li><a href="#">Lead Optimization</a></li>
+                    <li><a href="#">IP Strategy</a></li>
+                    <li><a href="#">Competitive Intelligence</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">ROI Calculator</a></li>
+                    <li><a href="#">Case Studies</a></li>
+                    <li><a href="#">Enterprise Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Eureka Life Sciences. All rights reserved.</p>
+            <div>
+                <a href="#" style="color: var(--text-muted); font-size: 12px; text-decoration: none; margin-right: 16px;">Privacy</a>
+                <a href="#" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">Terms</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

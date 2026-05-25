@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka Life Sciences - Research Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --primary: #06b6d4;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        #hero {
+            padding: 60px 2rem;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .hero-header p {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .tool-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .tool-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tool-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .tool-features li {
+            padding: 6px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-size: 12px;
+        }
+
+        .btn-tool {
+            width: 100%;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+
+        .btn-tool:hover {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        #workflows {
+            padding: 60px 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .workflows-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .workflow-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        .workflow-content {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .workflow-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .workflow-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        #api-section {
+            padding: 60px 2rem;
+        }
+
+        .api-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .api-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .api-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .api-code {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        #cta {
+            padding: 60px 2rem;
+            background: var(--bg-secondary);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-container h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-container p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        footer {
+            padding: 40px 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">Eureka LS</a>
+            <ul class="nav-links">
+                <li><a href="#hero">Tools</a></li>
+                <li><a href="#workflows">Workflows</a></li>
+                <li><a href="#api-section">API</a></li>
+            </ul>
+            <a href="#" class="btn btn-primary">Sign In</a>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-container">
+            <div class="hero-header">
+                <h1>Research Tools</h1>
+                <p>Specialized AI agents for every stage of drug discovery</p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">💊</div>
+                    <h3>Lead Compound Analysis</h3>
+                    <p>Identify and prioritize drug candidates with comprehensive ADMET and drug-likeness analysis.</p>
+                    <ul class="tool-features">
+                        <li>SAR extraction from patents</li>
+                        <li>ADMET prediction</li>
+                        <li>Drug-likeness scoring</li>
+                        <li>Structure comparison</li>
+                    </ul>
+                    <button class="btn-tool">Launch Tool</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">📄</div>
+                    <h3>Document Analyzer</h3>
+                    <p>Analyze complex patent and literature sets with speed and precision.</p>
+                    <ul class="tool-features">
+                        <li>Multi-document comparison</li>
+                        <li>Data extraction at scale</li>
+                        <li>Clinical trial analysis</li>
+                        <li>Head-to-head comparison</li>
+                    </ul>
+                    <button class="btn-tool">Launch Tool</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">📊</div>
+                    <h3>Pharma Pulse</h3>
+                    <p>Stay ahead with customized weekly briefs across your priority targets.</p>
+                    <ul class="tool-features">
+                        <li>Patent alerts</li>
+                        <li>Competitor tracking</li>
+                        <li>Clinical trial updates</li>
+                        <li>Customizable feeds</li>
+                    </ul>
+                    <button class="btn-tool">Launch Tool</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">🔍</div>
+                    <h3>Target Intelligence</h3>
+                    <p>Comprehensive target assessment across therapeutic areas.</p>
+                    <ul class="tool-features">
+                        <li>Target landscape mapping</li>
+                        <li>Pipeline analysis</li>
+                        <li>Indication coverage</li>
+                        <li>Competitive positioning</li>
+                    </ul>
+                    <button class="btn-tool">Launch Tool</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="workflows">
+        <div class="workflows-container">
+            <h2 class="section-title">Research Workflows</h2>
+            <div class="workflow-tabs">
+                <span class="tab active">Target Assessment</span>
+                <span class="tab">Lead Optimization</span>
+                <span class="tab">Clinical Benchmark</span>
+                <span class="tab">IP Strategy</span>
+            </div>
+            <div class="workflow-content">
+                <h3>Target Assessment Workflow</h3>
+                <p>Start with target identification, analyze the competitive landscape, assess druggability, and identify licensing opportunities. Our Target Intelligence tool provides comprehensive analysis of your target across multiple therapeutic areas, including pipeline mapping, clinical stage distribution, and key developer analysis.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="api-section">
+        <div class="api-container">
+            <h2 class="section-title">API Access</h2>
+            <div class="api-card">
+                <h3>REST API</h3>
+                <div class="api-code">curl -X GET "https://api.eureka.patsnap.com/v1/targets?name=ACVR2A" \
+  -H "Authorization: Bearer YOUR_API_KEY"</div>
+                <a href="#" class="btn btn-primary">View API Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta">
+        <div class="cta-container">
+            <h2>Ready to Get Started?</h2>
+            <p>Access all our research tools with a free trial.</p>
+            <a href="#" class="btn btn-primary">Start Free Trial</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <ul class="footer-links">
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">API Reference</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+            <div class="copyright">© 2024 Eureka Life Sciences</div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark-tech">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Eureka Life Sciences - AI-powered intelligence platform for biopharma research. Accelerate drug discovery by 50%.">
+    <title>Eureka Life Sciences - Precision AI for Drug Discovery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <style>
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px var(--spacing-xl) var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+        }
+
+        #hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            position: relative;
+            z-index: 2;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-content h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--spacing-xl);
+            max-width: 500px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .hero-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .data-vis-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            transition: all var(--transition-normal);
+        }
+
+        .data-vis-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .card-badge {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .sar-chart {
+            height: 120px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .sar-bar {
+            flex: 1;
+            background: var(--gradient-primary);
+            border-radius: 4px 4px 0 0;
+            opacity: 0.8;
+            transition: opacity var(--transition-fast);
+            animation: barGrow 1.5s ease-out backwards;
+        }
+
+        .sar-bar:hover {
+            opacity: 1;
+        }
+
+        .sar-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .sar-bar:nth-child(2) { height: 55%; animation-delay: 0.2s; }
+        .sar-bar:nth-child(3) { height: 70%; animation-delay: 0.3s; }
+        .sar-bar:nth-child(4) { height: 50%; animation-delay: 0.4s; }
+        .sar-bar:nth-child(5) { height: 85%; animation-delay: 0.5s; }
+        .sar-bar:nth-child(6) { height: 95%; animation-delay: 0.6s; }
+        .sar-bar:nth-child(7) { height: 80%; animation-delay: 0.7s; }
+        .sar-bar:nth-child(8) { height: 60%; animation-delay: 0.8s; }
+        .sar-bar:nth-child(9) { height: 45%; animation-delay: 0.9s; }
+        .sar-bar:nth-child(10) { height: 75%; animation-delay: 1s; }
+
+        @keyframes barGrow {
+            from {
+                height: 0;
+                opacity: 0;
+            }
+            to {
+                opacity: 0.8;
+            }
+        }
+
+        .chart-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: var(--spacing-sm);
+        }
+
+        .admet-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-sm);
+        }
+
+        .admet-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .admet-item:nth-child(1) { animation-delay: 0.2s; }
+        .admet-item:nth-child(2) { animation-delay: 0.3s; }
+        .admet-item:nth-child(3) { animation-delay: 0.4s; }
+        .admet-item:nth-child(4) { animation-delay: 0.5s; }
+        .admet-item:nth-child(5) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admet-value {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .admet-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        #features {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+            background: var(--bg-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        #compliance {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+        }
+
+        .compliance-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .compliance-item {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .compliance-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .compliance-icon {
+            font-size: 24px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .compliance-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .compliance-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        footer {
+            padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-lg);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-md);
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-xl);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: clamp(2rem, 5vw, 3rem);
+            }
+            
+            .hero-stats {
+                gap: var(--spacing-sm);
+            }
+            
+            .admet-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">EL</div>
+                <span class="logo-text">Eureka LS</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#compliance">Compliance</a></li>
+                <li><a href="#stats">Results</a></li>
+            </ul>
+            
+            <div class="header-actions">
+                <span class="compliance-badge">✓ FDA 21 CFR Part 11</span>
+                <a href="#" class="btn btn-secondary">Sign In</a>
+                <a href="#" class="btn btn-primary">Start Free Trial</a>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <div class="mobile-menu">
+            <ul class="mobile-nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#compliance">Compliance</a></li>
+                <li><a href="#stats">Results</a></li>
+            </ul>
+            <div class="mobile-actions">
+                <a href="#" class="btn btn-primary">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Accelerate Drug Discovery<br><span>by 50%</span></h1>
+                <p class="hero-subtitle">AI-powered intelligence platform for biopharma research. Analyze millions of patents, clinical trials, and scientific literature to make data-driven decisions faster.</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">3x</div>
+                        <div class="hero-stat-label">ROI Improvement</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">99%</div>
+                        <div class="hero-stat-label">Analysis Accuracy</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">100+</div>
+                        <div class="hero-stat-label">Pharma Clients</div>
+                    </div>
+                </div>
+
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary">Explore Platform →</a>
+                    <a href="#" class="btn btn-secondary">Request Demo</a>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                <div class="data-vis-card">
+                    <div class="card-header">
+                        <span class="card-title">SAR Curve Analysis</span>
+                        <span class="card-badge">Lead Optimization</span>
+                    </div>
+                    <div class="sar-chart">
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                        <div class="sar-bar"></div>
+                    </div>
+                    <div class="chart-label">Activity vs. Compound Series</div>
+                </div>
+
+                <div class="data-vis-card">
+                    <div class="card-header">
+                        <span class="card-title">ADMET Properties</span>
+                        <span class="card-badge">Drug-Likeness</span>
+                    </div>
+                    <div class="admet-grid">
+                        <div class="admet-item">
+                            <div class="admet-value">92%</div>
+                            <div class="admet-label">Caco-2</div>
+                        </div>
+                        <div class="admet-item">
+                            <div class="admet-value">-5.2</div>
+                            <div class="admet-label">LogP</div>
+                        </div>
+                        <div class="admet-item">
+                            <div class="admet-value">1.2</div>
+                            <div class="admet-label">MW</div>
+                        </div>
+                        <div class="admet-item">
+                            <div class="admet-value">8.6</div>
+                            <div class="admet-label">pKa</div>
+                        </div>
+                        <div class="admet-item">
+                            <div class="admet-value">98%</div>
+                            <div class="admet-label">BBB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="section-header">
+            <span class="section-tag">AI AGENTS</span>
+            <h2 class="section-title">Task-Specific AI Agents</h2>
+            <p class="section-desc">Optimize candidates, benchmark clinical results, and spot market signals with specialized AI tools.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </div>
+                <h3>Lead Compound Analysis</h3>
+                <p>Comprehensive ADMET, biological, and drug-likeness analysis for clinical-ready candidate identification.</p>
+                <a href="#" class="feature-link">Analyze Now →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                </div>
+                <h3>SAR Data Extraction</h3>
+                <p>AI-powered SAR parsing from small molecule patents. Discover compounds with data-driven insights.</p>
+                <a href="#" class="feature-link">Extract SAR →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3>Pharma Pulse</h3>
+                <p>Customized weekly briefs across priority targets with newly published patent alerts.</p>
+                <a href="#" class="feature-link">Track Signals →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <h3>Document Analyzer</h3>
+                <p>Analyze complex patent and literature sets with speed and precision. Head-to-head clinical comparison.</p>
+                <a href="#" class="feature-link">Extract Data →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="compliance">
+        <div class="section-header">
+            <span class="section-tag">COMPLIANCE & SECURITY</span>
+            <h2 class="section-title">Enterprise-Grade Compliance</h2>
+            <p class="section-desc">Your data security and regulatory compliance are our top priorities.</p>
+        </div>
+
+        <div class="compliance-container">
+            <div class="compliance-grid">
+                <div class="compliance-item">
+                    <div class="compliance-icon">✅</div>
+                    <div class="compliance-title">FDA 21 CFR Part 11</div>
+                    <div class="compliance-desc">Electronic records & signatures</div>
+                </div>
+                <div class="compliance-item">
+                    <div class="compliance-icon">🔒</div>
+                    <div class="compliance-title">ISO 27001</div>
+                    <div class="compliance-desc">Information security</div>
+                </div>
+                <div class="compliance-item">
+                    <div class="compliance-icon">🛡️</div>
+                    <div class="compliance-title">SOC 2 Type II</div>
+                    <div class="compliance-desc">Service organization</div>
+                </div>
+                <div class="compliance-item">
+                    <div class="compliance-icon">📊</div>
+                    <div class="compliance-title">Audit Trail</div>
+                    <div class="compliance-desc">Complete data tracking</div>
+                </div>
+                <div class="compliance-item">
+                    <div class="compliance-icon">🔑</div>
+                    <div class="compliance-title">RBAC</div>
+                    <div class="compliance-desc">Role-based access control</div>
+                </div>
+                <div class="compliance-item">
+                    <div class="compliance-icon">🌍</div>
+                    <div class="compliance-title">GDPR</div>
+                    <div class="compliance-desc">Data protection</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value">50%</div>
+                <div class="stat-label">Time Reduction</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3x</div>
+                <div class="stat-label">ROI Improvement</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">99%</div>
+                <div class="stat-label">Analysis Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100+</div>
+                <div class="stat-label">Pharma Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5M+</div>
+                <div class="stat-label">Patents Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Data Updates</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform Your R&D?</h2>
+            <p class="cta-desc">Join leading biopharma organizations using Eureka Life Sciences to accelerate drug discovery.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Schedule Demo →</a>
+                <a href="#" class="btn btn-secondary">Download Whitepaper</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">EL</div>
+                    <span class="logo-text">Eureka LS</span>
+                </a>
+                <p>Precision AI for early drug discovery, grounded in billion-scale biological and global intelligence data.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Solutions</h4>
+                <ul>
+                    <li><a href="#">Lead Compound Analysis</a></li>
+                    <li><a href="#">SAR Extraction</a></li>
+                    <li><a href="#">Pharma Pulse</a></li>
+                    <li><a href="#">Document Analyzer</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Whitepapers</a></li>
+                    <li><a href="#">Case Studies</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Eureka Life Sciences. All rights reserved.</p>
+            <div>
+                <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">Security</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.header');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

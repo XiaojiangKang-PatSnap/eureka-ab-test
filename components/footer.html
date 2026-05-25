@@ -1,0 +1,179 @@
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <a href="#" class="logo">
+                <div class="logo-icon">EL</div>
+                <span class="logo-text">Eureka LS</span>
+            </a>
+            <p>Precision AI for early drug discovery, grounded in billion-scale biological and global intelligence data.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Solutions</h4>
+            <ul>
+                <li><a href="#">Lead Compound Analysis</a></li>
+                <li><a href="#">SAR Extraction</a></li>
+                <li><a href="#">Pharma Pulse</a></li>
+                <li><a href="#">Document Analyzer</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+                <li><a href="#">Whitepapers</a></li>
+                <li><a href="#">Case Studies</a></li>
+                <li><a href="#">API Documentation</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <span>|</span>
+            <a href="#">Terms of Service</a>
+            <span>|</span>
+            <a href="#">Security</a>
+        </div>
+        <p>&copy; 2024 Eureka Life Sciences. All rights reserved.</p>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-lg);
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+    }
+    
+    .footer-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: var(--spacing-2xl);
+        margin-bottom: var(--spacing-2xl);
+    }
+    
+    .footer-brand .logo {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        text-decoration: none;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .footer-brand .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--bg-primary);
+    }
+    
+    .footer-brand .logo-text {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .footer-brand p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        max-width: 300px;
+    }
+    
+    .footer-section h4 {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .footer-section ul {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+        list-style: none;
+    }
+    
+    .footer-section a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color var(--transition-fast);
+    }
+    
+    .footer-section a:hover {
+        color: var(--primary);
+    }
+    
+    .footer-bottom {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-top: var(--spacing-xl);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .footer-legal {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+    
+    .footer-legal a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 12px;
+    }
+    
+    .footer-legal span {
+        color: var(--border);
+    }
+    
+    .footer-bottom p {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+    
+    @media (max-width: 1024px) {
+        .footer-container {
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .footer-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
