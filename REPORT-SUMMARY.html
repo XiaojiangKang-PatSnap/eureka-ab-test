@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka LS A/B Variants — Quick Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-brand: #0764E9;
+            --color-brand-subtle: #DDEBF8;
+            --color-brand-light: #82C3FF;
+            --color-cyan-subtle: #D4F0F6;
+            --color-cyan: #27B4D1;
+            --color-purple-subtle: #E2D5ED;
+            --color-purple: #914AED;
+            --color-success: #45A321;
+            --color-success-subtle: #E3F1DE;
+            --color-warning: #DC7C08;
+            --color-warning-subtle: #FAECDA;
+            --color-N900: #020A1A;
+            --color-N700: #495973;
+            --color-N600: #6B778C;
+            --color-N400: #8993A4;
+            --color-N100: #DFE1E6;
+            --color-N50: #EBECF0;
+            --color-N20: #F4F5F7;
+            --bg-page: #F4F5F7;
+            --bg-card: #FFFFFF;
+            --shadow-card: 0px 1px 2px rgba(2,10,26,0.04), 0px 4px 12px rgba(2,10,26,0.06);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            line-height: 20px;
+            color: var(--color-N900);
+            background: var(--bg-page);
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--color-brand); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 32px 72px;
+        }
+
+        .cover {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 12px;
+            padding: 40px 48px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 24px;
+        }
+        .cover-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-brand);
+            margin-bottom: 12px;
+        }
+        .cover h1 {
+            font-size: 28px;
+            line-height: 36px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--color-N900);
+            margin-bottom: 8px;
+        }
+        .cover-sub {
+            font-size: 14px;
+            color: var(--color-N700);
+            margin-bottom: 16px;
+        }
+        .cover-meta {
+            display: flex;
+            gap: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-N100);
+            font-size: 12px;
+            color: var(--color-N600);
+        }
+        .cover-meta strong { color: var(--color-N900); font-weight: 600; }
+
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            padding: 24px 32px 32px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-brand);
+            margin-bottom: 4px;
+            font-family: var(--font-mono);
+        }
+        h2 + .h2-title {
+            font-size: 18px;
+            line-height: 24px;
+            font-weight: 600;
+            color: var(--color-N900);
+            margin-bottom: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            font-size: 12px;
+        }
+        thead { background: #FAFBFC; }
+        th {
+            text-align: left;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-N400);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid var(--color-N100);
+            vertical-align: top;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--color-N100);
+            color: var(--color-N700);
+            vertical-align: top;
+            line-height: 18px;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        td.code {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-brand);
+            white-space: nowrap;
+        }
+        td.dim { color: var(--color-N400); }
+        td strong { color: var(--color-N900); font-weight: 600; }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .tag-light { background: var(--color-brand-subtle); color: var(--color-brand); }
+        .tag-cyan { background: var(--color-cyan-subtle); color: var(--color-cyan); }
+        .tag-purple { background: var(--color-purple-subtle); color: var(--color-purple); }
+        .tag-success { background: var(--color-success-subtle); color: var(--color-success); }
+        .tag-warning { background: var(--color-warning-subtle); color: var(--color-warning); }
+        .tag-gray { background: var(--color-N50); color: var(--color-N700); }
+        .tag-dark { background: var(--color-N900); color: #fff; }
+
+        .check { color: var(--color-success); font-weight: 600; }
+        .cross { color: var(--color-N400); }
+
+        .note {
+            font-size: 12px;
+            color: var(--color-N700);
+            padding: 10px 14px;
+            background: var(--color-brand-subtle);
+            border-left: 3px solid var(--color-brand);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        @media print {
+            body { background: white; }
+            .page { padding: 0; max-width: none; }
+            section, .cover { break-inside: avoid; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <header class="cover">
+            <div class="cover-eyebrow">Quick Reference · A/B Variants</div>
+            <h1>Eureka LS A/B Variants — Summary</h1>
+            <p class="cover-sub">At-a-glance reference for the 10 A/B test variants. Tables only. For full rationale and persona narratives, see <a href="REPORT.html">REPORT.html</a>.</p>
+            <div class="cover-meta">
+                <div><strong>Variants:</strong> 10</div>
+                <div><strong>Production page:</strong> eureka.patsnap.com/ls-landing</div>
+                <div><strong>Design system:</strong> PatSnap v5.12</div>
+            </div>
+        </header>
+
+        <section>
+            <h2>01 · Variant Index</h2>
+            <div class="h2-title">10 variants at a glance</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 90px;">Variant</th>
+                        <th>Persona</th>
+                        <th>Surface</th>
+                        <th>Hero element</th>
+                        <th>Primary CTA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="code">A · Dark Tech</td><td>Computational / medicinal chemist</td><td><span class="tag tag-dark">Dark</span></td><td>SAR distribution + ADMET grid</td><td>Start free trial</td></tr>
+                    <tr><td class="code">B · Modern Biotech</td><td>Young biotech R&amp;D lead</td><td><span class="tag tag-light">Light</span></td><td>Live agent activity stack</td><td>Try free for 14 days</td></tr>
+                    <tr><td class="code">C · Academic Rigor</td><td>Academic PI, individual researcher</td><td><span class="tag tag-cyan">Light, centered</span></td><td>Peer-reviewed validation statement</td><td>Request research access</td></tr>
+                    <tr><td class="code">D · ROI / Business</td><td>VP R&amp;D, BD lead</td><td><span class="tag tag-success">Light</span></td><td>$2.4M savings panel + 2 metrics</td><td>Schedule ROI assessment</td></tr>
+                    <tr><td class="code">E · Minimal</td><td>Time-poor mid-funnel buyer</td><td><span class="tag tag-gray">Light, minimal</span></td><td>Headline + 2 CTAs only</td><td>Start free trial</td></tr>
+                    <tr><td class="code">F · Functional / API</td><td>Bench scientist, dev, integrator</td><td><span class="tag tag-purple">Light + dark code</span></td><td>Live curl + JSON response</td><td>Get API key</td></tr>
+                    <tr><td class="code">G · Case-Driven</td><td>Skeptical enterprise buyer</td><td><span class="tag tag-light">Light</span></td><td>Centered statement + logo wall</td><td>Book a demo</td></tr>
+                    <tr><td class="code">H · Data Viz</td><td>Data scientist, CI analyst</td><td><span class="tag tag-cyan">Light + dashboards</span></td><td>4-card dashboard grid</td><td>Schedule demo</td></tr>
+                    <tr><td class="code">I · Mobile-First</td><td>BD on the road, exec scanners</td><td><span class="tag tag-light">Light, mobile</span></td><td>Compact hero + quick actions</td><td>Start free trial</td></tr>
+                    <tr><td class="code">J · Academic Resources</td><td>University library, procurement</td><td><span class="tag tag-cyan">Light</span></td><td>Publications + citation blocks</td><td>Request academic access</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>02 · Deployment Map</h2>
+            <div class="h2-title">Where to send each variant</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 90px;">Variant</th>
+                        <th>Best-fit traffic source</th>
+                        <th>Ad / channel direction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="code">A</td><td>Technical Twitter / X, RDKit / OpenEye lists, scientific Slack</td><td>Lead with chart, not person; dark-themed creative</td></tr>
+                    <tr><td class="code">B</td><td>LinkedIn ads to "Director of Discovery" at 20–200 headcount biotechs</td><td>Peer-to-peer tone; "ship faster" messaging</td></tr>
+                    <tr><td class="code">C</td><td>ResearchGate, conference QR codes, journal display ads</td><td>Lead with publication; cite journals</td></tr>
+                    <tr><td class="code">D</td><td>Outbound sales follow-up, executive newsletter sponsorship</td><td>Lead with $ outcome; CFO-friendly framing</td></tr>
+                    <tr><td class="code">E</td><td>Branded search ("eureka pricing"), procurement portals</td><td>Trial-expiration emails; reactivation links</td></tr>
+                    <tr><td class="code">F</td><td>Hacker News, dev.to, Python / R communities, GitHub README</td><td>Lead with code snippet; technical voice</td></tr>
+                    <tr><td class="code">G</td><td>Retargeting from product pages, demo follow-up</td><td>Logos + outcomes; named-account ABM</td></tr>
+                    <tr><td class="code">H</td><td>Tableau / Looker communities, analytics newsletters</td><td>Dashboard screenshots in creative</td></tr>
+                    <tr><td class="code">I</td><td>QR codes, Slack / WhatsApp, mobile email</td><td>Mobile-only; conference badges</td></tr>
+                    <tr><td class="code">J</td><td>Library science newsletters, academic procurement channels</td><td>Citation-format direct access</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>03 · Success Metrics</h2>
+            <div class="h2-title">What to measure per variant</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Variants</th>
+                        <th>Primary metric</th>
+                        <th>Guardrail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Self-serve trial</strong></td><td><span class="code">A · B · E · I</span></td><td>Trial signup → first agent run within 24h</td><td>Bounce rate, scroll depth</td></tr>
+                    <tr><td><strong>Enterprise demo</strong></td><td><span class="code">D · G</span></td><td>Demo booked → opportunity in CRM</td><td>Demo no-show rate</td></tr>
+                    <tr><td><strong>Developer activation</strong></td><td><span class="code">F</span></td><td>API key issued → first authenticated request</td><td>Time-to-first-request</td></tr>
+                    <tr><td><strong>Analytics activation</strong></td><td><span class="code">H</span></td><td>Demo booked → dashboard activation rate</td><td>Demo no-show rate</td></tr>
+                    <tr><td><strong>Academic / institutional</strong></td><td><span class="code">C · J</span></td><td>Access requests / institutional license inquiries</td><td>Bounce rate</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>04 · Persona Fit Matrix</h2>
+            <div class="h2-title">Which variant for which persona</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Persona</th>
+                        <th>Best</th>
+                        <th>Acceptable</th>
+                        <th>Wrong</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Computational / medicinal chemist</td><td><span class="tag tag-success">A</span></td><td><span class="tag tag-light">F</span></td><td><span class="tag tag-warning">D, G, J</span></td></tr>
+                    <tr><td>Young biotech R&amp;D lead</td><td><span class="tag tag-success">B</span></td><td><span class="tag tag-light">E, I</span></td><td><span class="tag tag-warning">D, J</span></td></tr>
+                    <tr><td>Academic PI / individual researcher</td><td><span class="tag tag-success">C</span></td><td><span class="tag tag-light">J</span></td><td><span class="tag tag-warning">B, D</span></td></tr>
+                    <tr><td>VP R&amp;D / BD lead</td><td><span class="tag tag-success">D</span></td><td><span class="tag tag-light">G</span></td><td><span class="tag tag-warning">A, F, I</span></td></tr>
+                    <tr><td>Time-poor mid-funnel buyer</td><td><span class="tag tag-success">E</span></td><td><span class="tag tag-light">I</span></td><td><span class="tag tag-warning">C, J</span></td></tr>
+                    <tr><td>Builder / dev / integrator</td><td><span class="tag tag-success">F</span></td><td><span class="tag tag-light">A, H</span></td><td><span class="tag tag-warning">D, G, J</span></td></tr>
+                    <tr><td>Skeptical enterprise buyer</td><td><span class="tag tag-success">G</span></td><td><span class="tag tag-light">D</span></td><td><span class="tag tag-warning">B, F, I</span></td></tr>
+                    <tr><td>Data scientist / analyst</td><td><span class="tag tag-success">H</span></td><td><span class="tag tag-light">F</span></td><td><span class="tag tag-warning">C, J</span></td></tr>
+                    <tr><td>Mobile / on-the-go user</td><td><span class="tag tag-success">I</span></td><td><span class="tag tag-light">E</span></td><td><span class="tag tag-warning">A, H</span></td></tr>
+                    <tr><td>University library / procurement</td><td><span class="tag tag-success">J</span></td><td><span class="tag tag-light">C</span></td><td><span class="tag tag-warning">B, D, F</span></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>05 · Section Map</h2>
+            <div class="h2-title">What each variant contains</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th class="code">A</th>
+                        <th class="code">B</th>
+                        <th class="code">C</th>
+                        <th class="code">D</th>
+                        <th class="code">E</th>
+                        <th class="code">F</th>
+                        <th class="code">G</th>
+                        <th class="code">H</th>
+                        <th class="code">I</th>
+                        <th class="code">J</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Hero with product visual</td><td class="check">●</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Hero stats row</td><td class="check">●</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Agent grid (6 cards)</td><td class="check">●</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Feature grid (4 cards)</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Stats row (4 metrics)</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="check">●</td><td class="cross">—</td></tr>
+                    <tr><td>Compliance row</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Case studies / outcomes</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Customer logo wall</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td></tr>
+                    <tr><td>Testimonials</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Pricing tiers</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Publications / citations</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td></tr>
+                    <tr><td>Methodology stages</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>API code blocks</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Workflow tabs</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Dashboards / charts</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Data flow diagram</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td><td class="cross">—</td></tr>
+                    <tr><td>Quick action grid</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td></tr>
+                    <tr><td>Bottom tab bar</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td><td class="cross">—</td></tr>
+                    <tr><td>Whitepapers / PDFs</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td></tr>
+                    <tr><td>Citation blocks (APA/MLA/BibTeX)</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">●</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>06 · Recommended Tests</h2>
+            <div class="h2-title">First-wave A/B test plan</div>
+            <div class="note"><strong>Do not split traffic 10 ways.</strong> Use persona-routed buckets or axis-isolated tests. Full reasoning in <a href="REPORT.html#s6">REPORT.html §6</a>.</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>Test</th>
+                        <th>Audience</th>
+                        <th>Question</th>
+                        <th>Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="tag tag-success">Ship 1st</span></td><td>Production vs <span class="code">E</span></td><td>Branded search</td><td>Does pricing-above-fold raise self-serve conversion?</td><td>Self-serve Pro signup</td></tr>
+                    <tr><td><span class="tag tag-success">Ship 2nd</span></td><td>Production vs <span class="code">B</span></td><td>LinkedIn biotech ads</td><td>Does startup-tone messaging convert young biotech better?</td><td>Trial signup ≤ 7 days</td></tr>
+                    <tr><td><span class="tag tag-light">Wave 2</span></td><td>Production vs <span class="code">C</span> vs <span class="code">G</span></td><td>Late-funnel (2+ pageviews)</td><td>Which proof type — peer-reviewed or case-driven — wins?</td><td>Demo booked</td></tr>
+                    <tr><td><span class="tag tag-light">Wave 2</span></td><td>Production vs <span class="code">A</span> vs <span class="code">B</span></td><td>Organic search</td><td>Does specialization beat consensus messaging?</td><td>Trial signup</td></tr>
+                    <tr><td><span class="tag tag-light">Wave 2</span></td><td>Production vs <span class="code">F</span></td><td>HN / dev.to / GitHub</td><td>Does code-first hero raise developer activation?</td><td>API key + 1st request</td></tr>
+                    <tr><td><span class="tag tag-light">Wave 2</span></td><td>Production vs <span class="code">I</span></td><td>Mobile-detected traffic</td><td>Does mobile-first variant raise mobile conversion?</td><td>Mobile signup rate</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>07 · Design System Compliance</h2>
+            <div class="h2-title">All variants ship against PatSnap DS v5.12</div>
+            <table>
+                <thead>
+                    <tr><th>Token</th><th>Value</th><th>Compliance</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Brand color</td><td class="code">#0764E9</td><td><span class="tag tag-success">All variants</span></td></tr>
+                    <tr><td>Page bg (light)</td><td class="code">#F4F5F7</td><td><span class="tag tag-success">B, C, D, E, F, G, H, I, J</span></td></tr>
+                    <tr><td>Page bg (dark)</td><td class="code">#020A1A</td><td><span class="tag tag-success">A only</span></td></tr>
+                    <tr><td>Text primary</td><td class="code">#020A1A</td><td><span class="tag tag-success">All — never #000</span></td></tr>
+                    <tr><td>Typography</td><td>Inter · weights 400/600 only</td><td><span class="tag tag-success">All</span></td></tr>
+                    <tr><td>Mono</td><td>JetBrains Mono</td><td><span class="tag tag-success">All numerics, IDs, code</span></td></tr>
+                    <tr><td>Hero size cap</td><td>36px / lh 48px</td><td><span class="tag tag-success">All (I = 28px mobile)</span></td></tr>
+                    <tr><td>Button radius</td><td>4px</td><td><span class="tag tag-success">All — no pills</span></td></tr>
+                    <tr><td>Card radius</td><td>8px</td><td><span class="tag tag-success">All</span></td></tr>
+                    <tr><td>Card shadow</td><td><span class="code">0 1px 2px rgba(2,10,26,.04), 0 4px 12px rgba(2,10,26,.06)</span></td><td><span class="tag tag-success">All — no decorative</span></td></tr>
+                    <tr><td>Hover border</td><td class="code">#82C3FF</td><td><span class="tag tag-success">All</span></td></tr>
+                    <tr><td>Focus ring</td><td><span class="code">0 0 0 3px rgba(7,100,233,.25)</span></td><td><span class="tag tag-success">All via :focus-visible</span></td></tr>
+                    <tr><td>Spacing grid</td><td>4px base</td><td><span class="tag tag-success">All multiples of 4</span></td></tr>
+                    <tr><td>Chart palette</td><td>10-color (#1976D2 → #CA6B48)</td><td><span class="tag tag-success">H</span> · semantic in A</td></tr>
+                    <tr><td>Semantic colors</td><td>Blue · Green · Orange · Red</td><td><span class="tag tag-success">All — never repurposed</span></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>08 · File Index</h2>
+            <div class="h2-title">Pages and assets</div>
+            <table>
+                <thead>
+                    <tr><th>File</th><th>Type</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="version-a.html">version-a.html</a></td><td>Variant</td><td>Computational chemist · dark mode</td></tr>
+                    <tr><td><a href="version-b.html">version-b.html</a></td><td>Variant</td><td>Young biotech R&amp;D lead</td></tr>
+                    <tr><td><a href="version-c.html">version-c.html</a></td><td>Variant</td><td>Academic PI</td></tr>
+                    <tr><td><a href="version-d.html">version-d.html</a></td><td>Variant</td><td>VP R&amp;D / ROI</td></tr>
+                    <tr><td><a href="version-e.html">version-e.html</a></td><td>Variant</td><td>Time-poor mid-funnel buyer</td></tr>
+                    <tr><td><a href="version-f.html">version-f.html</a></td><td>Variant</td><td>Builder / API consumer</td></tr>
+                    <tr><td><a href="version-g.html">version-g.html</a></td><td>Variant</td><td>Skeptical enterprise buyer</td></tr>
+                    <tr><td><a href="version-h.html">version-h.html</a></td><td>Variant</td><td>Data scientist / analyst</td></tr>
+                    <tr><td><a href="version-i.html">version-i.html</a></td><td>Variant</td><td>Mobile-first</td></tr>
+                    <tr><td><a href="version-j.html">version-j.html</a></td><td>Variant</td><td>Academic / institutional</td></tr>
+                    <tr><td><a href="REPORT.html">REPORT.html</a></td><td>Detailed report</td><td>Full rationale, persona narratives, scenarios</td></tr>
+                    <tr><td><a href="styles/variables.css">styles/variables.css</a></td><td>Tokens</td><td>Design system tokens (light + dark)</td></tr>
+                    <tr><td><a href="styles/components.css">styles/components.css</a></td><td>Components</td><td>Shared component primitives</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 16px; font-size: 11px; color: var(--color-N600);">End of summary. For full analysis see <a href="REPORT.html">REPORT.html</a>.</p>
+        </section>
+
+    </div>
+</body>
+</html>
+

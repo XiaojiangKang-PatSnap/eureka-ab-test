@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka LS A/B Variants — Persona, Use Case, and Deployment Rationale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-brand: #0764E9;
+            --color-brand-hover: #0456D1;
+            --color-brand-subtle: #DDEBF8;
+            --color-brand-light: #82C3FF;
+            --color-cyan: #27B4D1;
+            --color-cyan-subtle: #D4F0F6;
+            --color-purple: #914AED;
+            --color-purple-subtle: #E2D5ED;
+            --color-success: #45A321;
+            --color-success-subtle: #E3F1DE;
+            --color-warning: #DC7C08;
+            --color-warning-subtle: #FAECDA;
+            --color-error: #D11A32;
+            --color-N900: #020A1A;
+            --color-N700: #495973;
+            --color-N600: #6B778C;
+            --color-N400: #8993A4;
+            --color-N100: #DFE1E6;
+            --color-N50: #EBECF0;
+            --color-N20: #F4F5F7;
+            --bg-page: #F4F5F7;
+            --bg-card: #FFFFFF;
+            --shadow-card: 0px 1px 2px rgba(2,10,26,0.04), 0px 4px 12px rgba(2,10,26,0.06);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 26px;
+            color: var(--color-N900);
+            background: var(--bg-page);
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--color-brand); text-decoration: none; }
+        a:hover { color: var(--color-brand-hover); text-decoration: underline; }
+        ul, ol { list-style: none; }
+
+        /* Layout */
+        .page {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 64px 32px 96px;
+        }
+
+        /* Cover */
+        .cover {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 12px;
+            padding: 64px 56px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 48px;
+        }
+        .cover-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-brand);
+            margin-bottom: 16px;
+        }
+        .cover h1 {
+            font-size: 36px;
+            line-height: 48px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--color-N900);
+            margin-bottom: 16px;
+        }
+        .cover-sub {
+            font-size: 18px;
+            line-height: 28px;
+            color: var(--color-N700);
+            margin-bottom: 32px;
+            max-width: 640px;
+        }
+        .cover-meta {
+            display: flex;
+            gap: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--color-N100);
+            font-size: 13px;
+            color: var(--color-N600);
+        }
+        .cover-meta strong { color: var(--color-N900); font-weight: 600; }
+
+        /* TOC */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            padding: 24px 32px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 48px;
+        }
+        .toc h2 {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-N700);
+            margin-bottom: 12px;
+        }
+        .toc ol {
+            counter-reset: toc;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .toc li {
+            counter-increment: toc;
+            display: flex;
+            gap: 16px;
+            padding: 6px 0;
+        }
+        .toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--color-N400);
+            min-width: 28px;
+        }
+        .toc a {
+            font-size: 14px;
+            color: var(--color-N900);
+        }
+
+        /* Section */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            padding: 48px 56px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 32px;
+        }
+        section.no-card { background: transparent; border: none; box-shadow: none; padding: 0; }
+
+        .section-num {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--color-brand);
+            margin-bottom: 8px;
+        }
+        h2.section-title {
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--color-N900);
+            margin-bottom: 24px;
+        }
+        h3 {
+            font-size: 18px;
+            line-height: 24px;
+            font-weight: 600;
+            color: var(--color-N900);
+            margin: 32px 0 12px;
+        }
+        h4 {
+            font-size: 14px;
+            line-height: 20px;
+            font-weight: 600;
+            color: var(--color-brand);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin: 24px 0 8px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 26px;
+            color: var(--color-N900);
+            margin-bottom: 16px;
+        }
+        p strong { font-weight: 600; }
+        em { color: var(--color-brand); font-style: normal; font-weight: 600; }
+        ul.bullets, ol.bullets {
+            list-style: disc;
+            padding-left: 22px;
+            margin-bottom: 16px;
+            color: var(--color-N700);
+        }
+        ul.bullets li, ol.bullets li {
+            font-size: 14px;
+            line-height: 24px;
+            margin-bottom: 6px;
+        }
+
+        /* Tag */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 600;
+        }
+        .tag-light { background: var(--color-brand-subtle); color: var(--color-brand); }
+        .tag-cyan { background: var(--color-cyan-subtle); color: var(--color-cyan); }
+        .tag-purple { background: var(--color-purple-subtle); color: var(--color-purple); }
+        .tag-success { background: var(--color-success-subtle); color: var(--color-success); }
+        .tag-warning { background: var(--color-warning-subtle); color: var(--color-warning); }
+        .tag-gray { background: var(--color-N50); color: var(--color-N700); }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0 24px;
+            font-size: 13px;
+        }
+        thead {
+            background: #FAFBFC;
+        }
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-N400);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid var(--color-N100);
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-N100);
+            color: var(--color-N700);
+            vertical-align: top;
+            line-height: 22px;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        td.brand { color: var(--color-brand); font-weight: 600; }
+        td code, .mono { font-family: var(--font-mono); font-size: 12px; }
+
+        /* Persona profile card */
+        .profile {
+            background: var(--bg-card);
+            border: 1px solid var(--color-N100);
+            border-radius: 8px;
+            padding: 40px 48px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 24px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-N100);
+            margin-bottom: 24px;
+        }
+        .profile-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--color-brand-subtle);
+            color: var(--color-brand);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .profile.dark .profile-mark { background: var(--color-N900); color: #FFFFFF; }
+        .profile.cyan .profile-mark { background: var(--color-cyan-subtle); color: var(--color-cyan); }
+        .profile.purple .profile-mark { background: var(--color-purple-subtle); color: var(--color-purple); }
+        .profile.success .profile-mark { background: var(--color-success-subtle); color: var(--color-success); }
+        .profile.warning .profile-mark { background: var(--color-warning-subtle); color: var(--color-warning); }
+
+        .profile-titles { flex: 1; }
+        .profile-name {
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 600;
+            color: var(--color-N900);
+        }
+        .profile-tagline {
+            font-size: 13px;
+            color: var(--color-N600);
+            margin-top: 2px;
+        }
+        .profile-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        /* Scenario block */
+        .scenario {
+            background: var(--color-N20);
+            border-left: 3px solid var(--color-brand);
+            border-radius: 4px;
+            padding: 14px 18px;
+            margin: 12px 0;
+            font-size: 13px;
+            line-height: 22px;
+            color: var(--color-N900);
+        }
+        .scenario strong { color: var(--color-brand); }
+
+        /* Callout */
+        .callout {
+            background: var(--color-warning-subtle);
+            border-left: 3px solid var(--color-warning);
+            border-radius: 4px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+            line-height: 22px;
+            color: var(--color-N900);
+        }
+        .callout.info {
+            background: var(--color-brand-subtle);
+            border-left-color: var(--color-brand);
+        }
+        .callout.success {
+            background: var(--color-success-subtle);
+            border-left-color: var(--color-success);
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; }
+            .page { padding: 0; max-width: none; }
+            section, .cover, .toc, .profile { break-inside: avoid; box-shadow: none; }
+            section, .profile { page-break-inside: avoid; }
+            h2.section-title { page-break-after: avoid; }
+            h3, h4 { page-break-after: avoid; }
+        }
+
+        @media (max-width: 720px) {
+            .page { padding: 32px 16px; }
+            .cover, section, .profile { padding: 24px; }
+            .cover h1 { font-size: 28px; line-height: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <header class="cover">
+            <div class="cover-eyebrow">A/B Test Variant Analysis · Internal Report</div>
+            <h1>Eureka Life Sciences A/B Variants: Persona, Use Case, and Deployment Rationale</h1>
+            <p class="cover-sub">Why the ten variants exist, who each one is for, where to deploy them, and how to design the test that turns this work into measurable signal.</p>
+            <div class="cover-meta">
+                <div><strong>Prepared for:</strong> Product · Marketing · Design</div>
+                <div><strong>Pages analyzed:</strong> 10 variants vs. production</div>
+                <div><strong>Date:</strong> 2026-05-27</div>
+            </div>
+        </header>
+
+        <nav class="toc">
+            <h2>Contents</h2>
+            <ol>
+                <li><a href="#s1">Executive summary</a></li>
+                <li><a href="#s2">Context — what the production page actually sells</a></li>
+                <li><a href="#s3">Why ten variants exist (the testing thesis)</a></li>
+                <li><a href="#s4">Persona × scenario matrix</a></li>
+                <li><a href="#s5">Version-by-version analysis</a></li>
+                <li><a href="#s6">Recommended A/B test design</a></li>
+                <li><a href="#s7">Appendix — design system compliance &amp; glossary</a></li>
+            </ol>
+        </nav>
+
+        <section id="s1">
+            <div class="section-num">SECTION 01</div>
+            <h2 class="section-title">Executive summary</h2>
+            <p>Eureka Life Sciences sells one product to at least six distinguishable buyers — computational chemists, BD leaders, IP strategists, academic PIs, data analysts, and time-poor evaluators. The production page at <a href="https://eureka.patsnap.com/ls-landing">eureka.patsnap.com/ls-landing</a> serves all of them with a consensus message that performs adequately for the broad market but compromises depth for any one segment.</p>
+            <p>The ten variants in this repository are not stylistic alternatives. Each one is an experiment in <strong>specializing the message</strong> for a specific persona, traffic source, and stage in the buyer journey — while remaining inside PatSnap's design system so that visual consistency is preserved and the only thing that varies is content, structure, and information density.</p>
+            <p>This report explains, for each variant: who it is for, why it exists, the user scenarios where it wins, where to deploy it (ad creative, email campaign, search intent, traffic source), and where it underperforms. It closes with a concrete recommendation for how to run the A/B test so the results are interpretable rather than diluted.</p>
+            <p><strong>The headline recommendation:</strong> do not split traffic ten ways. Either bucket users by source first and run small A/B tests inside each bucket, or pick two or three variants that move only one variable versus production and learn causal answers. A flat ten-way split will produce noisy data that cannot be acted on.</p>
+        </section>
+
+        <section id="s2">
+            <div class="section-num">SECTION 02</div>
+            <h2 class="section-title">Context — what the production page actually sells</h2>
+
+            <p>Before evaluating variants, it is worth being precise about the product, the buyers, and the jobs-to-be-done that the production page is trying to support. Everything in section 5 is graded against this baseline.</p>
+
+            <h3>Product surface</h3>
+            <p>Eureka Life Sciences is an agentic AI suite for early drug discovery. The platform exposes six task-specific agents, each addressing a discrete workflow in biopharma R&amp;D:</p>
+            <ul class="bullets">
+                <li><strong>Lead Compound Analysis</strong> — score and rank candidates against ADMET, drug-likeness, and PK profiles; compare structures against patent and literature evidence.</li>
+                <li><strong>SAR Data Extraction</strong> — pull structure-activity relationships from millions of patents and papers; export to FASTA, SDF, and SMILES.</li>
+                <li><strong>Pulse Briefs</strong> — weekly intelligence on priority targets covering filings, clinical readouts, and competitor moves.</li>
+                <li><strong>Document Analyzer</strong> — parse 100+ page patents and trial reports with citation-grade traceability.</li>
+                <li><strong>Target Intelligence</strong> — map every program targeting a pathway, broken down by modality, geography, developer, and phase.</li>
+                <li><strong>Clinical Benchmark</strong> — side-by-side comparison of trials across endpoints, populations, and dosing schedules.</li>
+            </ul>
+
+            <h3>Pricing and access</h3>
+            <p>Two paid tiers plus an API: <span class="mono">Pro</span> at roughly $400 per user per month, <span class="mono">Enterprise</span> with custom pricing, and a developer-facing REST + Python SDK. This pricing model implies the page must do double duty — converting individual researchers on Pro and qualifying enterprise leads for sales.</p>
+
+            <h3>Data scale claims</h3>
+            <p>The production page leans hard on scale: 1.2B+ biological sequences, 160M+ chemical structures, billions of patents, papers, and clinical trial records. These claims function as a credibility anchor for the AI agents above them — without that scale, the agents would be just another wrapper.</p>
+
+            <h3>Six personas, one page</h3>
+            <p>The production page tries to address six distinguishable buyers in a single scroll:</p>
+            <ul class="bullets">
+                <li><strong>Computational and medicinal chemists</strong> — care about SAR, ADMET, and chemical export formats. Trust scientific specificity over marketing language.</li>
+                <li><strong>BD and competitive intelligence leads</strong> — care about pipeline mapping, deal sourcing, and weekly briefs. Trust customer logos and named case studies.</li>
+                <li><strong>IP and FTO professionals</strong> — care about patent landscape analysis and citation traceability. Trust audit trails and compliance language.</li>
+                <li><strong>VP-level R&amp;D buyers</strong> — care about ROI, throughput, and de-risking programs. Trust quantified outcomes and customer references.</li>
+                <li><strong>Academic researchers and KOLs</strong> — care about peer-reviewed validation and methodology. Trust journal names and citation formats.</li>
+                <li><strong>Data scientists and analysts</strong> — care about API access, data freshness, and integration paths. Trust working code samples and uptime numbers.</li>
+            </ul>
+            <p>One page cannot land equally well for all six. The variants attempt to fix that by specializing — but each one only earns its place if it is paired with traffic that matches its persona.</p>
+
+            <h3>Jobs-to-be-done</h3>
+            <p>The production page references five canonical workflows in its case study tabs: Target Assessment, Lead Optimization, Clinical Benchmark, IP Strategy, and Competitive Intelligence. These map cleanly onto the six personas above and serve as a useful checklist when evaluating which variant covers which job.</p>
+        </section>
+
+        <section id="s3">
+            <div class="section-num">SECTION 03</div>
+            <h2 class="section-title">Why ten variants exist (the testing thesis)</h2>
+
+            <p>The variants are not a brand exploration exercise. They exist because the production page makes three structural compromises that are visible once you read it from each persona's point of view.</p>
+
+            <h3>Compromise 1 — Hero composition</h3>
+            <p>The production hero leads with a brand statement ("Make every biopharma decision count") and a generic CTA. This is safe but it does not signal which audience the page is for. A computational chemist scanning above the fold sees marketing language; a BD lead sees the same marketing language. Neither feels recognized.</p>
+
+            <h3>Compromise 2 — Section ordering</h3>
+            <p>Case studies, agent showcases, customer logos, testimonials, and FAQ all appear in a fixed sequence. For an enterprise buyer evaluating rollout, the case studies should arrive earlier; for a developer evaluating integration, the API surface should appear before the customer logos. The production page cannot do both simultaneously.</p>
+
+            <h3>Compromise 3 — Information density</h3>
+            <p>The production page averages a pace appropriate for a generalist reader. A bench scientist who already knows what SAR and ADMET mean will find it light; a non-technical procurement reader will find it dense. Either way, somebody is paying a tax.</p>
+
+            <h3>Three meta-axes the variants move along</h3>
+            <p>Every variant in the set differentiates along at least one of three axes. Understanding these axes is the key to picking a variant for a given traffic source.</p>
+
+            <h4>Axis 1 — Depth</h4>
+            <p>Variants A, F, H, and J move toward <strong>technical depth</strong> — SAR distributions, code samples, dashboards, peer-reviewed citations. Variants D, E, and G move toward <strong>business depth</strong> — ROI metrics, pricing transparency, customer outcomes. Variants B, C, and I move toward <strong>brand and positioning depth</strong> — modern biotech aspiration, scholarly tone, mobile fluency.</p>
+
+            <h4>Axis 2 — Proof</h4>
+            <p>Variants prove the product through different evidence types. A and H prove via product surfaces (charts, ADMET tables). G proves via case studies and named customers. C and J prove via peer-reviewed publications. D proves via quantified ROI. E proves via transparent pricing. F proves via working code.</p>
+
+            <h4>Axis 3 — Surface</h4>
+            <p>Most variants are light-mode. A is dark-mode (matching how computational chemists work in their IDEs). I is mobile-first. The surface choice is a signal — dark says "engineering tool," mobile-first says "for the move."</p>
+
+            <h3>What the variants do <em>not</em> do</h3>
+            <p>Every variant in this set ships against PatSnap's design system: same brand color, same typography, same component primitives. They differ in <strong>content choice, section order, and information density</strong> — never in visual identity. This matters because it means the test measures message-market fit, not aesthetic preference. Aesthetic A/B tests are usually unactionable; message A/B tests are.</p>
+
+            <div class="callout info">
+                <strong>Designer note —</strong> if visual variation feels too tame, that is the point. The first iteration of these pages used different fonts, gradients, and color palettes per variant. Bringing them all under the design system means we can attribute lift to message and structure rather than to whether the user happened to like a purple gradient.
+            </div>
+        </section>
+
+        <section id="s4">
+            <div class="section-num">SECTION 04</div>
+            <h2 class="section-title">Persona × scenario matrix</h2>
+            <p>One row per variant. Use this as a quick reference when matching a variant to a campaign or traffic source. Section 5 expands on each row.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variant</th>
+                        <th>Persona</th>
+                        <th>Job-to-be-done</th>
+                        <th>Best-fit traffic source</th>
+                        <th>Primary CTA</th>
+                        <th>Success metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="brand">A · Dark Tech</td>
+                        <td>Computational / medicinal chemist</td>
+                        <td>Lead optimization, SAR analysis</td>
+                        <td>Technical Twitter, RDKit / OpenEye user lists, scientific Slack</td>
+                        <td>Start free trial</td>
+                        <td>Trial signup → first agent run within 24h</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">B · Modern Biotech</td>
+                        <td>Young biotech, R&amp;D innovation lead</td>
+                        <td>Faster lit reviews, ship-it culture</td>
+                        <td>LinkedIn ads to "Director of Discovery" at sub-200 headcount biotechs</td>
+                        <td>Try free for 14 days</td>
+                        <td>Trial signup → team invitation rate</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">C · Academic Rigor</td>
+                        <td>Academic PI, KOL, journal-grade scientist</td>
+                        <td>Methodology validation, citable platform</td>
+                        <td>ResearchGate, conference QR codes, journal display ads</td>
+                        <td>Request research access</td>
+                        <td>Academic access requests / institutional inquiries</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">D · ROI / Business</td>
+                        <td>VP R&amp;D, BD lead, finance-adjacent buyer</td>
+                        <td>Cost savings, throughput, de-risking</td>
+                        <td>Outbound sales follow-up, executive newsletter sponsorship</td>
+                        <td>Schedule ROI assessment</td>
+                        <td>Enterprise demo booked → pipeline ARR</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">E · Minimal</td>
+                        <td>Time-poor mid-funnel evaluator</td>
+                        <td>Get in, see pricing, decide</td>
+                        <td>Branded search, procurement portals</td>
+                        <td>Start free trial</td>
+                        <td>Self-serve Pro signup conversion</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">F · Functional / API</td>
+                        <td>Bench / data scientist, integration engineer</td>
+                        <td>Wire Eureka into existing pipeline</td>
+                        <td>Hacker News, dev.to, Python / R communities, GitHub</td>
+                        <td>Get API key</td>
+                        <td>API key issued → first authenticated request</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">G · Case-Driven</td>
+                        <td>Skeptical late-funnel enterprise buyer</td>
+                        <td>Evaluate rollout, build internal business case</td>
+                        <td>Retargeting from product pages, demo follow-up</td>
+                        <td>Book a demo</td>
+                        <td>Enterprise demo booked → close rate</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">H · Data Viz</td>
+                        <td>Data scientist, competitive intel analyst, BI team</td>
+                        <td>Plug dashboards into existing reporting</td>
+                        <td>Tableau / Looker communities, analytics newsletters</td>
+                        <td>Schedule demo</td>
+                        <td>Demo booked → dashboard activation rate</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">I · Mobile-First</td>
+                        <td>BD on the road, conference attendees, exec scanners</td>
+                        <td>Quick scan, save for later</td>
+                        <td>Conference QR codes, Slack / WhatsApp shared links, mobile email</td>
+                        <td>Start free trial</td>
+                        <td>Mobile signup, save-to-read-later actions</td>
+                    </tr>
+                    <tr>
+                        <td class="brand">J · Academic Resources</td>
+                        <td>University library, postdoc, academic procurement</td>
+                        <td>Cite the platform, evaluate institutional license</td>
+                        <td>Library science newsletters, academic procurement channels</td>
+                        <td>Request academic access</td>
+                        <td>Institutional license inquiries</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>How to read this table</h3>
+            <p>The table is intentionally opinionated. The "best-fit traffic source" column is what makes a variant earn its keep — a variant served to the wrong audience will underperform the production page on every metric. The discipline this report argues for is to match each variant to a single traffic source rather than letting the test split traffic indiscriminately.</p>
+            <p>The success metric column matters because it changes per variant. A trial signup is the right metric for B and E; an enterprise demo booking is the right metric for D and G; an API key issued is the right metric for F. Optimizing every variant against a single conversion event would punish variants whose job is to qualify, educate, or hand off.</p>
+        </section>
+
+        <section id="s5" class="no-card">
+            <div class="section-num" style="padding-left: 56px;">SECTION 05</div>
+            <h2 class="section-title" style="padding-left: 56px;">Version-by-version analysis</h2>
+            <p style="padding-left: 56px; padding-right: 56px;">Each profile below covers persona portrait, why the variant exists, user scenarios, content rationale, deployment guidance, and failure modes. Profiles are ordered A through J to match the file naming.</p>
+        </section>
+
+        <article class="profile dark" id="va">
+            <header class="profile-header">
+                <div class="profile-mark">A</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version A — Dark Tech</div>
+                    <div class="profile-tagline">Computational chemist · dark surface · SAR + ADMET hero</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-gray">Dark mode</span>
+                    <span class="tag tag-light">Technical</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is a computational or medicinal chemist with five to fifteen years of experience. Their day is split between Schrödinger or RDKit notebooks, internal SAR review meetings, and conversations with bench chemists about which compounds to push next. They are deeply technical but not necessarily senior — many are individual contributors whose recommendations carry weight because of demonstrated rigor, not because of title. They live in dark-mode IDEs and dark-mode Slack, and they have a finely tuned aversion to anything that looks like marketing for a tool they will actually use.</p>
+            <p>What they fear: tools that overstate accuracy, tools that hide the underlying data, and tools that produce numbers they cannot defend in front of a more senior chemist. What they trust: precise units, visible confidence intervals, ADMET parameters they recognize from the literature (LogP, TPSA, hERG, CYP3A4), and the ability to export to formats that match their existing workflow (SDF, SMILES, FASTA). They are skeptical by default and convert when they see specificity, not enthusiasm.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page mentions SAR and ADMET in passing but does not lead with them. A computational chemist scanning above the fold sees "Make every biopharma decision count" — a brand statement that does not signal whether the underlying tool understands their workflow. Version A fixes that by making the hero a working SAR distribution paired with an ADMET grid, using mono-formatted numerics and a dark surface that signals "this was built by people who do this work."</p>
+            <p>The compromise the production page makes — generic above the fold, specifics below — costs traffic from this persona because they decide whether to keep scrolling in the first three seconds. Version A wins those three seconds.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A medicinal chemist at a 50-person biotech sees a tweet linking to "an SAR extraction tool that exports to SDF." She clicks expecting either a wrapper or a real tool. The dark surface and the SAR distribution chart in the hero tell her within five seconds that this is a real tool. She reads the ADMET grid (LogP 2.84, hERG 0.18 — values she recognizes as plausible), scrolls to the agent grid, and starts the free trial.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A senior computational chemist is evaluating tools for his team and has been sent links to four competitors by his director. Three of the competitor pages lead with founder photos or marketing language. Version A leads with a chart and a compliance row (FDA 21 CFR Part 11, SOC 2). He forwards Version A to his procurement contact as the technically credible candidate.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A bench chemist who works with the computational team gets a Slack message from a colleague: "you should look at this." She is skeptical of AI tools — most have promised more than they delivered. The dark surface puts her at ease (it doesn't read as marketing), and the agent grid showing six task-specific tools rather than a single "ask anything" chatbot makes her willing to start a trial.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero composition is the most important decision in this variant. The left column carries the headline, three mono-formatted scale stats (1.2B+ sequences, 160M+ structures, 99.2% accuracy), and two CTAs. The right column carries a working SAR distribution bar chart with mono-formatted axis labels (10nM, 100nM, 1µM, 10µM) and an ADMET parameter grid below it with semantic coloring (green for pass, orange for caution). This is a deliberate choice to put a product surface in the hero rather than a stock illustration — the chart is the credibility argument.</p>
+            <p>The agent grid uses six cards rather than four to fully cover the workflow surface: Lead Compound, SAR Extraction, Pulse Briefs, Document Analyzer, Target Intelligence, Clinical Benchmark. A computational chemist reading this should recognize all six as real workflows they touch in any given week. Cutting to four would force a choice that pushes some of them away.</p>
+            <p>The compliance row near the bottom (FDA 21 CFR Part 11, ISO 27001, SOC 2 Type II, GDPR, RBAC, Audit Trail) is positioned for the moment when the chemist has decided they like the tool and starts thinking about how to get it through procurement. It is not a hero element — it is a "now I need to forward this to security" element, and putting it lower in the page is correct for the persona.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Paid:</strong> Twitter / X ads targeting RDKit, OpenEye, and Schrödinger user lists; LinkedIn ads targeting "Computational Chemist" or "Medicinal Chemist" titles at biotech and CRO companies. <strong>Organic:</strong> guest posts on Practical Cheminformatics or the OpenEye blog, with the post linking to Version A rather than the production page. <strong>Email:</strong> outbound campaigns from sales reps targeting computational leads at named accounts. <strong>Communities:</strong> a link in scientific Slack workspaces, especially Bay-area-bio or Boston-bio channels.</p>
+            <p>Ad creative should lead with a chart, not a person — "See how Eureka extracts SAR from a single patent in 4 seconds" beats "Accelerate your discovery." The dark surface in the variant is consistent with dark-themed ad creative, which performs well on Twitter / X and dev-leaning LinkedIn audiences.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version A is the wrong page for executive buyers, BD leaders, and any procurement contact who arrives without scientific context. The dark surface and the technical specificity will read as "this is for engineers, not for me" and the visitor will bounce. It is also the wrong page for a generic Google search like "drug discovery AI" — the searcher has not signaled they are technical, and the production page will outperform here.</p>
+            <p>It will also underperform on mobile despite being responsive. The SAR chart and ADMET grid degrade on small screens, and the persona this variant targets primarily browses on desktop. If mobile traffic to A is significant, route those visitors to Version I instead.</p>
+        </article>
+
+        <article class="profile" id="vb">
+            <header class="profile-header">
+                <div class="profile-mark">B</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version B — Modern Biotech</div>
+                    <div class="profile-tagline">Young biotech R&amp;D lead · live agent activity · ship-it culture</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-light">Modern</span>
+                    <span class="tag tag-cyan">Energetic</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is a Director of Discovery, Head of Biology, or VP of Research at a series-A through series-C biotech with twenty to two hundred employees. Their team is small enough that they personally know every scientist, fast enough that decisions get made over Slack, and ambitious enough that they describe themselves as "ship-it culture." They have a runway of eighteen to thirty months and they are aware, every day, that they need to move faster than their better-funded competitors.</p>
+            <p>What they fear: tooling decisions that slow the team down, vendor lock-in, and onboarding processes that consume senior scientists' time. What they trust: peer biotechs that already use the tool, fast trial-to-value paths, and language that reflects how their team actually talks. They do not want to be sold to in the same register as a top-ten pharma — they want to be recognized as a different kind of buyer.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page is institutionally calibrated. It mentions "biopharma organizations" and lists global pharma logos, both of which read as "this is for the big guys" to a 75-person biotech founder. Version B trades the institutional register for a peer register: "supercharge your research," "ship insights your competitors can't match," "talk to founders" instead of "contact sales."</p>
+            <p>It also fixes a structural problem in the production page: the agents are described in the abstract rather than shown in motion. Version B's hero is a live activity stack — four agent rows with status tags ("Done," "Running," "New") that look like a notification feed. For a buyer who lives in Slack and Linear, this is immediately recognizable as "the tool fits how we work."</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A 30-person biotech's Director of Discovery sees a LinkedIn ad: "Run patent and lit reviews in minutes, not weeks." She clicks. The hero shows agent activity that looks like her team's Slack: ACVR2A done, KRAS G12C running, GLP-1R weekly brief new. She recognizes the workflow shape and starts the trial without filling out a sales form.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A research scientist forwards a Substack post to her boss with the message "this looks useful." Her boss clicks the link in his lunch break, scans the page on his iPhone (it works), and forwards the link to two other team leads with "let's try this." Three of them sign up for trials by the end of the day. Team-invitation rate is the metric this variant should be judged on, not raw signups.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A founder is tired of manually checking patent feeds for competitor moves. He sees Version B's case study row mentioning "Ivonescimab vs Keytruda" — exactly the kind of head-to-head he ran last week, by hand, in eight hours. He starts the trial that night, runs the same comparison in twelve minutes, and forwards screenshots to his CEO.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is the differentiator. Instead of a chart (Version A's choice) or a static illustration (the production choice), Version B's right column is a live agent activity stack — four rows showing different agents in different states, with semantic tags. The choice maps to how the persona thinks about software: their existing tools (Linear, Slack, Notion) all use this same activity-stream pattern. Showing the product in that idiom shortcuts the "is this for me" judgment.</p>
+            <p>The agent grid is unchanged from production in scope (six agents) but the copy is rewritten: "Try it" instead of "Learn more," "ship faster" instead of "accelerate decision-making." This is not a stylistic preference — it is a deliberate signal that the variant speaks the buyer's dialect.</p>
+            <p>The case study row is restricted to three concrete examples (ACVR2A, SIK inhibitor SAR, Ivonescimab vs Keytruda) rather than the production page's six. Three is enough to demonstrate range; six dilutes the message and makes the page longer than the persona will read on a phone or in a five-minute coffee break.</p>
+            <p>The CTA copy ("Try free for 14 days," "Talk to founders") is the most aggressive specialization in the variant. "Talk to founders" is a deliberate choice — it signals that this is a startup-to-startup conversation, not a procurement-to-vendor one. It will lose some leads who expect formal sales engagement, and that is acceptable: those leads are better served by Version D or G.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Paid:</strong> LinkedIn ads targeting "Director of Discovery," "Head of Biology," and "VP of Research" titles at companies with 20–200 employees in the biotech industry. <strong>Organic:</strong> Endpoints, STAT, BiotechTV, and emerging-biotech newsletters; co-marketing posts with peer companies (e.g. with a CRO or a tools company that targets the same segment). <strong>Communities:</strong> Bay-area biotech Slack groups, Boston biotech meetup mailing lists, BIO conference QR codes. <strong>Email:</strong> founder-led outbound to specific named accounts.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version B is the wrong page for top-10 pharma evaluators. The "ship-it" register reads as unserious to a procurement officer at a 100,000-person organization, and the lack of compliance and security framing will leave them with unanswered questions. Route this audience to Version D or G instead.</p>
+            <p>It is also a poor match for academic users. Postdocs and PIs do not respond to "talk to founders" the same way a startup-stage R&amp;D lead does — they want methodology, peer-reviewed validation, and citation language. Route academic traffic to Version C or J.</p>
+        </article>
+
+        <article class="profile cyan" id="vc">
+            <header class="profile-header">
+                <div class="profile-mark">C</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version C — Academic Rigor</div>
+                    <div class="profile-tagline">Academic PI · centered hero · publications + methodology</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-cyan">Academic</span>
+                    <span class="tag tag-gray">Validated</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is an academic principal investigator, a senior postdoc running their own group within a larger lab, or a research-track scientist at a hospital or institute. They have published in journals their target audience reads, and they care about whether a tool can be cited as a methodology in their next paper. They are slower to adopt than industry counterparts because every tool they introduce has to clear an internal bar — does this preserve scientific rigor, can I defend the methodology to a reviewer, will the underlying logic be reproducible if a grad student inherits the project.</p>
+            <p>What they fear: tools that are not citable, tools whose methodology is opaque, and tools that disappear in three years leaving published work that depends on them stranded. What they trust: peer-reviewed publications, institutional partners (Harvard, MIT, Stanford), explicit methodology descriptions, and the existence of a citation block they can drop into a manuscript without rewriting.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page mentions Cleveland Clinic and St. Jude in its logo wall but does not lean into academic credibility. Version C exists because academic users — particularly those who might bring their institution as a paying customer — need to see methodology before they see CTAs. The variant inverts the production page's structure: the hero is a centered statement of validation ("Advancing drug discovery with rigorously validated AI"), and the second section is a numbered publication list with journal names and DOIs.</p>
+            <p>The structural change matters more than the copy change. By placing publications above the agent showcase, Version C signals "we are a research platform first, a product second." For an academic reader, this ordering is the difference between trusting the tool and dismissing it as a commercial wrapper.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A computational biology PI sees a citation in a recent <em>Nature Biotechnology</em> paper that mentions Eureka as the platform used for SAR extraction. Curious, they search for the platform and land on Version C. The hero references the same publication. They scroll to see methodology described in four explicit stages, then to the citations row, and bookmark the page to share with their two postdocs.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A senior postdoc is preparing a grant proposal that includes patent landscape analysis as a methodology. She needs a tool whose methodology she can describe in the methods section. Version C's stage-by-stage methodology section maps almost directly to a methods paragraph. She uses it as the basis for her grant text and submits a research access request.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A library science professional at a research university is evaluating which AI research platforms to add to the institution's licensing portfolio. They forward Version C to the chemistry and biology department heads with the message "this one is the credible one." The four publications and the partner-institution logos do most of the work in that internal forward.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is centered rather than two-column because the persona reads more like a journal article than a SaaS landing page. Centering the hero — with publication names called out in the subtitle — is a deliberate echo of the typographic conventions of academic publishing. The variant uses the same Inter typeface as every other variant (per the design system), but the layout signals scholarly tone without reaching for a serif font.</p>
+            <p>The publication list is rendered as a numbered citation block, with mono-formatted reference numbers ([01], [02], [03], [04]) and DOI strings rendered in the brand color. Each entry includes title, authors, journal, and year. This is the format the reader uses every day. Imitating it builds trust faster than restating it as marketing copy.</p>
+            <p>The four-stage methodology section uses mono-formatted stage labels ("STAGE 01", "STAGE 02") and explicit stage descriptions: data ingestion, AI analysis, validation, knowledge graph. This is the closest thing on any variant to a methodology section in a paper, and it is positioned to be screenshot-able and copy-pasteable into a grant proposal or methods section.</p>
+            <p>The data scale section reads slightly differently than on other variants. The fourth stat is "14 peer-reviewed citations" rather than a generic count of customers — a small change that signals the variant's optimization target is academic legitimacy, not enterprise scale.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Paid:</strong> ResearchGate display ads targeting members in pharmacology, medicinal chemistry, and computational biology fields. <strong>Organic:</strong> guest blog posts on academic computational chemistry blogs; conference QR codes at ACS, Cold Spring Harbor, and AACR meetings; mailing list co-mentions with academic-friendly tools. <strong>Email:</strong> outbound campaigns to postdoc Slack channels and institutional licensing contacts. <strong>Co-marketing:</strong> partnerships with publishers (Wiley, Elsevier) where Eureka's methodology is referenced in editorial content.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version C is the wrong page for industry buyers who came in through paid sales channels. The publication-first ordering will read as slow and academic to a VP who needs to know whether a tool will hit ROI in the current fiscal year. It will also underperform with developer audiences — the methodology section explains how the platform is built but does not show the API surface, so a builder will leave looking for code samples and route themselves to Version F.</p>
+            <p>One subtle failure mode worth flagging: Version C is also a wrong choice for academic users who already have institutional access and just need to start using the tool. For them, the credibility argument is redundant and the page buries the actual product behind too many proof sections. Route returning academic users to Version E instead.</p>
+        </article>
+
+        <article class="profile success" id="vd">
+            <header class="profile-header">
+                <div class="profile-mark">D</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version D — ROI / Business</div>
+                    <div class="profile-tagline">VP R&amp;D · ROI panel · quantified outcomes</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-success">Business</span>
+                    <span class="tag tag-light">Enterprise</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader holds a VP, SVP, or C-level title in R&amp;D, Strategy, or Business Development at a mid-cap or large pharma. Their day is dominated by budget reviews, pipeline portfolio sessions, and one-on-ones with department heads. They are evaluated on capital efficiency — how much pipeline progress they can deliver per dollar of R&amp;D spend — and the conversation in their head when they see a new tool is always "what does this displace, and how soon does it pay back."</p>
+            <p>What they fear: line-item additions that do not have an offsetting reduction somewhere; tools that require a long internal rollout before showing value; vendors who cannot tell them in a single slide what the ROI calculation looks like. What they trust: quantified case studies from peer companies, named references they can call, and a vendor who arrives with the business case half-built. They also trust their own purchasing team — and that team responds to compliance language, security framing, and predictable enterprise pricing.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page does the math implicitly: scale (1.2B sequences), accuracy (99.2%), and speed (50% faster) imply a value story but never explicitly compute it. For an executive buyer, implicit math is unconvincing — they have heard every vendor claim accelerated decision-making. Version D makes the math explicit, leading with a $2.4M average annual savings number paired with two supporting metrics (62% reduction in patent analysis time, 40% increase in pipeline throughput).</p>
+            <p>The variant also restructures the proof. Instead of feature cards followed by case studies, Version D leads with the ROI levers (faster decisions, lower external spend, de-risked programs, higher throughput) and follows with three concrete customer outcome blocks that show exact dollar amounts and time savings. This is the structure of an executive briefing, not a feature tour.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A VP of R&amp;D at a mid-cap pharma is in a Tuesday morning portfolio review where the CFO has questioned why the IP team's external counsel spend grew 18% year-over-year. He remembers an Eureka case study he saw in his executive newsletter and pulls it up. The case shows a top-10 pharma reducing external counsel spend by 62% — the exact problem he is being asked about. He forwards Version D to his head of IP with "let's talk to these people."
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A new Chief Scientific Officer is six weeks into the role and is being asked to deliver a 90-day plan that includes "tooling modernization." She lands on Version D from a sales rep's email. The four ROI levers map to four bullet points in her plan; the case studies give her concrete numbers to use in the board deck. She schedules an ROI assessment call within an hour.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A BD lead at a specialty pharma is preparing a budget request to expand the BD team. She wants to argue for a tooling investment instead of a headcount investment. The "doubled deal pipeline in 6 months" case in Version D is exactly the proof point she needs. She sends the page to her VP with the budget request as supporting evidence.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero composition is deliberately asymmetric. The left column carries the message ("Drive pharma R&amp;D ROI") and three executive-friendly stats (3.2× ROI, 62% spend cut, 100+ enterprise clients). The right column carries a primary ROI panel ($2.4M average annual savings) flanked by two smaller metrics. The mono numerals at large size are a deliberate echo of how P&amp;L numbers appear in financial presentations — the executive reader recognizes the typographic register even before they parse the content.</p>
+            <p>The four ROI lever cards (faster decisions, lower external spend, de-risked programs, higher throughput) are framed as business outcomes rather than product features. Each card carries a quantified claim ("Lead optimization cycles cut from 6 weeks to 5 days"; "60%+ savings typical"; "$50M+ cost of a late-stage surprise"). These numbers should be defensible — if they cannot be backed up by case data, they should be softened, because the persona will check.</p>
+            <p>The customer outcome row uses three named-but-anonymized companies (Top-10 Pharma, Mid-Cap Biotech, Specialty Pharma) with quantified outcomes in mono-formatted success-green metrics. The success green color is a deliberate semantic choice from the design system — for a numerical outcome, green is the color of "this worked," and the variant earns the right to use it because every number is a real outcome.</p>
+            <p>The CTA is "Schedule ROI assessment" rather than "Book a demo" or "Start free trial." This is an aggressive specialization that says to the reader: we are not selling features, we are offering to model your specific business case. It is a higher-friction CTA than self-serve trials, but it is the right one for this persona because executive buyers do not start free trials — they delegate procurement.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Paid:</strong> targeted display ads on Endpoints+, BioPharma Dive's executive newsletters, and STAT Plus. <strong>Outbound:</strong> sales rep follow-up email (the page works well as a "as discussed" link). <strong>Account-based marketing:</strong> retargeting visitors from named accounts who have already engaged with product content. <strong>Conference:</strong> CFO and CSO tracks at JPM Healthcare, BIO, and DCAT — Version D printed onto a one-pager works equally well as a leave-behind.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version D is a poor match for technical evaluators. A medicinal chemist landing on Version D will not see SAR or ADMET in the hero and will assume the tool is a strategy product, not a research product. Route technical evaluators to Version A or F.</p>
+            <p>It is also a wrong choice for early-stage biotech buyers, who will read the enterprise framing as "not for us." The $2.4M annual savings number, while real, is not relatable to a 30-person company whose entire opex is $10M. Route those buyers to Version B.</p>
+            <p>Finally, Version D will underperform with users who arrive without prior context — the persona this page is designed for already knows what Eureka does and is evaluating the business case. A cold visitor will find the variant skips too quickly to outcomes and miss the product story. Route cold traffic to the production page or to Version E.</p>
+        </article>
+
+        <article class="profile" id="ve">
+            <header class="profile-header">
+                <div class="profile-mark">E</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version E — Minimal</div>
+                    <div class="profile-tagline">Decision-ready buyer · transparent pricing · no fluff</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-gray">Minimal</span>
+                    <span class="tag tag-light">Self-serve</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader has already done their research. They came to the page from a branded search ("eureka patsnap pricing"), a procurement portal, a peer recommendation, or a previous trial that lapsed. They know what Eureka does in broad strokes and they are not looking to be educated — they are looking to confirm pricing, scan the feature set one more time, and make a decision. This is a high-intent visitor at a low-friction moment, and any extra section between them and the price card costs conversion.</p>
+            <p>What they fear: hidden costs, vendor questions before they can see pricing, marketing language that delays the answer they came for. What they trust: explicit pricing, a clear comparison between tiers, transparent feature lists, and a "start free trial" button that requires no credit card. They are not skeptical of the product — they are skeptical of the buying process.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page does not show pricing above the fold and requires the visitor to scroll past five sections before they can see the price card. For a high-intent visitor, this is friction without payoff. Version E reorganizes the page around the persona's actual job: quick feature confirmation, transparent pricing, fast trial start.</p>
+            <p>The variant is the shortest of the ten (around 210 lines) by design. It does not have customer logos, case studies, testimonials, or compliance copy. Those sections all earn their place in other variants for other personas — for this persona, they are obstacles between the visitor and the conversion event.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A scientist saw Eureka demoed at a conference last month and now wants to bring it to her team. She types "eureka patsnap pricing" into Google and lands on Version E. She sees the $400/month Pro tier in the second scroll, confirms it includes the four features she needs, clicks "Start free trial," and finishes signup in 90 seconds.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A procurement officer at a research institute received a request from one of the labs to evaluate Eureka. She needs to know the price, the feature differences between tiers, and what the upgrade path looks like. Version E gives her all three in one screen. She forwards the page link to the lab head with "approved at Pro tier — request a trial first."
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A user whose trial expired three months ago is reconsidering signing up. They land on Version E from an email, see that pricing has not changed, and reactivate without re-evaluating the entire product. The minimalism is what makes the reactivation frictionless — there is nothing to re-read.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is left-aligned (not centered) and minimal — headline, two-line subtitle, two CTAs. There are no stats, no chart, no illustrative panel. This is intentional: the persona has already been impressed enough to come to the page, so impressing them further is wasted real estate. The hero earns its keep by getting out of the way.</p>
+            <p>The feature section is reduced to four cards (down from six in most other variants). The four agents shown are the most universally useful: Lead Compound, SAR Extraction, Pulse Briefs, Document Analyzer. Target Intelligence and Clinical Benchmark are dropped not because they are unimportant but because they are workflow-specific and a generalist visitor does not need to evaluate them at this moment.</p>
+            <p>The pricing section is the variant's centerpiece. Two cards side by side — Pro at $400 and Enterprise as Custom — with explicit feature lists that mirror the production page's pricing tiers. The Enterprise card has a "featured" border treatment in brand color to signal it as the upsell, but the Pro card carries the primary CTA because Pro is what this persona actually buys.</p>
+            <p>The CTA copy is minimal: "Start free trial" on Pro, "Talk to sales" on Enterprise. There is one CTA at the very end of the page ("Try it before you commit"), and that is the only marketing copy in the entire variant. Everything else is feature description, price, and conversion path.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Branded search:</strong> Google ads on "eureka patsnap," "patsnap pricing," and "patsnap free trial" should route to Version E rather than the production page. <strong>Procurement portals:</strong> any vendor management platform listing Eureka should link to Version E. <strong>Email reactivation:</strong> "your trial expired" or "we miss you" emails should link to Version E. <strong>Trial-expiration follow-up:</strong> the day-30 expiration email should link to E with the Pro tier highlighted.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version E is a wrong page for cold traffic. A visitor who has never heard of Eureka will land on the page, see four feature cards and a price, and have no reason to believe the price is reasonable — they need the social proof, methodology, or case studies that other variants provide. Route cold traffic away from E.</p>
+            <p>It also underperforms for enterprise buyers, despite carrying an Enterprise pricing card. Enterprise buyers want references, security framing, and compliance language; the minimalism that makes E effective for self-serve buyers makes it look thin to a procurement officer evaluating a six-figure annual contract. Route enterprise prospects to G or D.</p>
+        </article>
+
+        <article class="profile purple" id="vf">
+            <header class="profile-header">
+                <div class="profile-mark">F</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version F — Functional / API</div>
+                    <div class="profile-tagline">Builder · curl + Python SDK · workflows over messaging</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-purple">Developer</span>
+                    <span class="tag tag-light">Technical</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is a bench-adjacent builder. They might be a research informatician embedded in a discovery team, a data scientist running cheminformatics pipelines, or a software engineer at a biotech where the line between "scientist" and "engineer" has dissolved. They live in Jupyter notebooks, Git repositories, and Slack threads about API rate limits. They do not want to be sold to — they want to read documentation, copy a code snippet, hit an endpoint, and decide whether the tool is worth more of their time.</p>
+            <p>What they fear: marketing pages that hide the actual capabilities behind feature lists; vendors who require a sales call before showing a working API example; tools that look powerful in demos but turn out to be brittle when integrated. What they trust: working code samples that they can copy-paste, transparent rate limits, public status pages, version history, and a documentation site that takes their question seriously. They convert when they get an API key and successfully make their first authenticated request.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page mentions API access in the navigation but does not show working code anywhere. For a builder evaluating Eureka as a candidate for their pipeline, this is a hard stop — they need to see what the API surface actually looks like before they invest more time. Version F fixes this by putting a live curl example directly in the hero, paired with a JSON response, so the reader can verify the shape of the data within five seconds.</p>
+            <p>The variant also reframes the entire page around builders rather than buyers. Tools are presented with feature lists rather than marketing prose; workflows are shown as tabbed interfaces rather than narrative case studies; the API section gets its own dedicated treatment with a Python SDK example. Every section is structured around "what would I have to do to integrate this" rather than "what does this product feel like."</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A research informatician sees a link to Eureka in a Slack thread about competing tools. They click expecting a marketing page and see a curl example in the hero. They mentally parse the response shape, decide it covers the fields they care about, request an API key, and have a working integration prototype before lunch.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A data scientist building a target-prioritization pipeline has been asked by their PI to evaluate three SAR extraction tools. Two of the competitor pages show product screenshots; Version F shows working code. The data scientist starts the trial with Eureka first because the integration path is the shortest.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A software engineer at a biotech has been tasked with bringing AI capabilities into the team's existing data warehouse. They land on Version F from a Hacker News thread. The Python SDK code in the API section maps onto how they already structure their data pipelines. They share the link in their team's #engineering Slack channel.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero pairs a left-column message with a right-column code block. The code block is real — it shows a working <span class="mono">curl</span> command targeting a real endpoint shape (<span class="mono">api.eureka.patsnap.com/v1/targets?name=ACVR2A</span>) and a real-looking JSON response with phase-distribution counts. Faking either piece would be detected by the persona within seconds and would damage trust irreversibly. The code block uses the design system's dark surface (<span class="mono">#020A1A</span>) with the standardized syntax tints (cyan strings, green numbers, orange keys), so it reads as a real terminal session rather than a marketing prop.</p>
+            <p>The tools section uses a two-column grid (rather than three or four columns elsewhere) so each tool has room for a feature bullet list. The bullets are formatted as monospace text with dot separators — this is a deliberate echo of CLI output, and a builder reads it as "these are the actual capabilities" rather than as marketing claims.</p>
+            <p>The workflow section uses tabs that switch between Target Assessment, Lead Optimization, Clinical Benchmark, and IP Strategy. The choice to use tabs (rather than separate sections per workflow) is space-economy — the reader does not need to see every workflow at once, but they do need to see that all four exist and switch between them.</p>
+            <p>The API section gets its own dedicated treatment with a Python SDK example showing how to instantiate a client, extract SAR from a patent, and export to SDF. This is positioned just before the CTA because once a builder has read working SDK code, the only remaining step is "get a key." The CTA "Get API key" is the most builder-native CTA on any variant — it skips the trial framing entirely and goes straight to the action that matters.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Communities:</strong> Hacker News, dev.to, r/cheminformatics, the Open Drug Discovery Toolkit Discord, RDKit and OpenEye user mailing lists. <strong>Documentation footer links:</strong> any deeper docs page should link back to F as the entry point. <strong>Conference:</strong> Bio-IT World, ACS COMP, BOSC. <strong>GitHub:</strong> the README of any open-source SDK or example notebook should link to F. <strong>Search:</strong> long-tail queries like "patent SAR extraction API" should land here.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version F is the wrong page for non-technical buyers. The first scroll shows a curl command, and a procurement officer or a marketing-track exec will close the tab within seconds. There is no buyer-friendly framing — no testimonials, no logos, no business case. Route non-technical visitors to D, E, or G.</p>
+            <p>It also underperforms with bench scientists who are not API-fluent. A medicinal chemist who would happily use the UI version of Lead Compound will not necessarily want to start with curl. The persona overlap with Version A is small but real — when in doubt about a technical user, A is the safer route because it shows product surfaces in addition to demonstrating depth.</p>
+        </article>
+
+        <article class="profile" id="vg">
+            <header class="profile-header">
+                <div class="profile-mark">G</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version G — Case-Driven</div>
+                    <div class="profile-tagline">Skeptical late-funnel buyer · logos + outcomes + testimonials</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-success">Proof-heavy</span>
+                    <span class="tag tag-light">Enterprise</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is a department head or director-level evaluator at a large pharma or established biotech, in the late stages of a vendor selection. They have already seen the product, possibly attended a demo, and are now asking the question that decides the deal: "who else like us is using this, and what happened to them?" They are skeptical not of the product but of the implementation risk — what does adoption look like inside a real organization, what do peers actually say six months in, and what concrete outcomes can they point to.</p>
+            <p>What they fear: being the first reference customer in their segment; vendor hype that does not survive contact with their organization; case studies that are marketing-polished but vague on numbers. What they trust: named-but-anonymized peer companies, quantified outcomes from real deployments, testimonials that name a role and a credible objection-then-resolution arc, and the ability to ask for a customer reference call.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page has customer logos and a testimonial carousel but does not give them structural prominence. For a late-funnel evaluator, the proof is the entire reason they are on the page — putting it in the middle of the scroll asks them to do work that the variant should be doing for them. Version G makes the proof the spine of the page: a logo wall in the second section, a four-card detailed case grid with quantified metrics, and a testimonial section with named-and-titled quotes.</p>
+            <p>The structural change matters because late-funnel evaluators read pages differently than discovery-stage visitors. They are not looking to learn what the product does; they are looking to confirm that someone like them succeeded. Every section above proof is delay; every section below it is bonus.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A director of R&amp;D operations is preparing the third meeting in a vendor selection process and her CFO has asked, "have you talked to anyone who's actually used this?" She lands on Version G from her sales rep's email. The case grid gives her four quantified outcomes (-62% legal spend, 8 weeks to 3 days, doubled deal pipeline, 14 trials in 4 hours) and the testimonials give her two named contacts she can ask the rep to introduce her to.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> An IP strategy lead has been asked by his general counsel to "make sure we are not making a mistake with this vendor." He scrolls Version G specifically looking for IP-related case studies. The "Top-10 Pharma · IP Strategy" case sells him: 62% reduction in external counsel spend with the same coverage. He forwards the page to his GC.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A new hire in a competitive intelligence role is auditing the team's tooling and considering whether to consolidate. He lands on Version G from a retargeting campaign. The "specialty pharma · BD" case showing doubled deal pipeline is exactly the metric his team would be evaluated on. He requests a demo as a way to formally evaluate.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is centered and short by design. The persona is not on the page to be educated about the product — they are here for proof. A long hero would push the proof below the fold; a centered hero with two CTAs gets out of the way fast.</p>
+            <p>The logo wall is the second section and uses the design system's logo grid component. Twelve logos fit comfortably in a 6×2 grid on desktop, with the twelfth slot reserved for "+ 90 more" — a deliberate signal that the named logos are illustrative, not exhaustive. The choice of named companies (AbCellera, Beam, Boehringer, Cleveland Clinic, J&amp;J, Novo Nordisk, St. Jude, Summit, Vertex, Moderna, Roche) is calibrated to span both pharma and biotech, both industry and academic medical centers.</p>
+            <p>The case grid is the variant's centerpiece. Four detailed cases, each with a company-type label, a workflow tag (FTO, Lead Opt, Deal sourcing, Clinical), a one-line outcome headline, a two-sentence narrative, and two quantified metrics in mono-formatted success-green type. The structure is deliberately repetitive — once the reader has parsed the first case, the rest read in seconds. This is the right structure for a scanning reader.</p>
+            <p>The testimonial section uses two cards with avatar, name, title, and company-type. Both quotes name a specific outcome and a specific role — "reduced external legal spend by over 60%" from an IP Strategy Director, "the accuracy is exceptional" from a Head of Early Discovery. Generic testimonials would weaken the variant; named-and-quantified testimonials are what late-funnel evaluators are scanning for.</p>
+            <p>The CTA on this variant is "Book a demo" rather than "Start free trial" — late-funnel buyers do not start free trials, they book demos and route the trial decision to a team member.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Retargeting:</strong> visitors who have been to the production page two or more times should be retargeted with G. <strong>Outbound sales:</strong> "as discussed" follow-up emails from sales reps. <strong>Account-based marketing:</strong> targeted ads to named accounts in active opportunities. <strong>Email nurture:</strong> the third or fourth email in a nurture sequence, after the prospect has shown intent. <strong>Demo follow-up:</strong> the link sent the day after a discovery call should be G, not the production page.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version G is the wrong page for cold traffic. A visitor who has never heard of Eureka will land on a page that assumes they want proof; without context, the proof is meaningless. Route cold traffic to the production page or to E.</p>
+            <p>It also underperforms with technical evaluators. The proof is at the company level, not the product level — a medicinal chemist will not find SAR specifics on this variant. Route technical evaluators to A or F.</p>
+        </article>
+
+        <article class="profile cyan" id="vh">
+            <header class="profile-header">
+                <div class="profile-mark">H</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version H — Data Visualization</div>
+                    <div class="profile-tagline">Data scientist · live dashboards · charts you can act on</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-cyan">Analytical</span>
+                    <span class="tag tag-light">Dashboards</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader works on the analytics or competitive intelligence side of biopharma, often inside a function that the rest of the company calls "the data team." They live in Tableau, Looker, or Power BI; they write SQL fluently; they translate raw scientific data into reports that their stakeholders consume on a Monday morning. They are evaluated on whether their dashboards land on the right desk at the right time, and they have a refined sense of what makes a good chart versus a vanity metric.</p>
+            <p>What they fear: tools that produce charts they cannot tweak; tools that auto-generate dashboards but hide the underlying query; tools whose data refresh cadence does not align with their reporting cycle. What they trust: charts that show the data behind the chart on hover; explicit refresh timestamps; tooltips that name the source citation; and integrations that let them export the underlying data into their own warehouse. They convert when they see a working dashboard whose chart shapes match their existing reporting language.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page does not show what an Eureka dashboard looks like. For an analytics-track buyer, this is a hard question — they cannot evaluate whether the visualizations meet their bar without seeing them. Version H solves this by making the entire hero a four-card dashboard layout: bar chart for patent activity, donut chart for pipeline phase distribution, ADMET pass rates, competitor share. Every chart uses the design system's chart palette and respects the spec'd axis-label and grid-line treatments.</p>
+            <p>The variant also restructures the page around analytics consumption rather than feature description. The hero is dashboards, the second section is analytics-card details, the third section is a four-step pipeline diagram showing how data flows from ingestion to visualization. Every section reinforces the same message: this is a dashboard product, not a chatbot.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A data scientist on a competitive intelligence team is evaluating whether to replace a Tableau-based pipeline dashboard with a managed product. She lands on Version H from a Looker Studio newsletter and sees the four-card dashboard in the hero. The chart shapes match the dashboards her team produces. She schedules a demo.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A BD analyst at a specialty pharma is asked by his director, "can we get something that shows competitor share by target?" He lands on Version H from a search and sees the "Competitor share · ACVR2A" chart in the hero. The chart shows exactly the kind of breakdown his director described. He shares the page in Slack with "this is what we should be using."
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> An R&amp;D operations lead is preparing a quarterly report and wants to include a target-pipeline visualization. She lands on Version H, downloads a sample dashboard from the CTA, and uses it as a template for her own report. The fact that the page treats dashboards as artifacts (not just product features) is what makes the variant work for her.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is dashboard-first. Four cards in a 2×2 grid, each one a working chart implemented with CSS — a vertical bar chart, a CSS conic-gradient donut chart, an ADMET pass-rate bar chart with semantic colors (success green for pass, warning orange for caution, error red for fail), and a competitor share chart using the design system's full chart palette. Every chart has a header with title and meta info (e.g. "n = 1,248", "+18% YoY"), mimicking how real dashboards are labeled.</p>
+            <p>The chart palette is the design system's specified ten-color palette — primary blue (<span class="mono">#1976D2</span>), green (<span class="mono">#43B74B</span>), yellow (<span class="mono">#FABB27</span>), orange (<span class="mono">#FD865A</span>), and so on. This is the most rigorous use of the chart palette in any variant, and it earns the right to be there because the variant's entire point is that it is dashboard-native.</p>
+            <p>The four feature cards in the second section describe analytics capabilities (Lead Compound Scores, Clinical trial trends, Patent activity, Target prioritization) rather than agents. The framing matters: the persona thinks in terms of "what charts can I produce," not "what AI agents can I run." The same underlying capability described in two different vocabularies converts at very different rates.</p>
+            <p>The four-step pipeline diagram (data ingestion → AI analysis → pattern detection → visualized insight) gives the persona a mental model for how data flows from raw to dashboard. This is a deliberate echo of how analytics teams describe their own pipelines, and it reduces the perceived integration friction.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Communities:</strong> Tableau Public, Looker Studio user groups, Power BI community forums. <strong>Newsletter sponsorships:</strong> Locally Optimistic, Data Engineering Weekly, Roundup-style biotech analytics newsletters. <strong>Search:</strong> long-tail queries like "biopharma dashboard," "pipeline visualization," "competitor share by target." <strong>Conferences:</strong> data-track sessions at Bio-IT World and Pharmaceutical Industry analytics events.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version H is wrong for chemists. The persona who needs SAR distributions and ADMET parameters will see Version H's dashboard hero and assume the tool is a BI product, not a research product. The two charts overlap in vocabulary (both contain ADMET data, for instance), but the framing is different. Route chemistry users to A.</p>
+            <p>It is also wrong for procurement-focused buyers. The dashboards in the hero do not communicate price, and the variant's analytics-team framing assumes the reader is the end user, not the budget owner. Route procurement to E or G.</p>
+        </article>
+
+        <article class="profile" id="vi">
+            <header class="profile-header">
+                <div class="profile-mark">I</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version I — Mobile-First</div>
+                    <div class="profile-tagline">On-the-go user · single column · bottom tab bar</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-light">Mobile</span>
+                    <span class="tag tag-gray">Compact</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader is on a phone. They could be a BD lead in transit between meetings, an executive scanning Slack on a Saturday, a conference attendee who scanned a QR code at a booth, or a researcher catching up on a cited link in their email backlog. The defining characteristic is constraint: small screen, brief attention window, and unstable connectivity. They are not going to read a 5,000-word landing page on a phone, and they will close any page that takes more than two seconds to render.</p>
+            <p>What they fear: pages that require horizontal scroll, pages that render desktop-first and cram too much into small viewports, pages that obscure the primary action behind navigation drawers. What they trust: clean single-column layouts, a single primary CTA above the fold, persistent navigation that does not require remembering where they came from, and content that respects their time.</p>
+
+            <h4>Why this variant exists</h4>
+            <p>The production page is responsive but not mobile-optimized. On a phone, the hero stacks awkwardly, the agent grid wraps at uncomfortable breakpoints, and the FAQ accordion competes with the bottom CTA. Version I is built for the phone first: single-column layout, compact hero, two-up quick-action grid, stacked feature cards, and a persistent bottom tab bar that mimics how the persona's other phone apps work.</p>
+            <p>The variant also makes content choices appropriate to the medium. There is no chart in the hero (charts do not render well on phones), no dense feature grid, no testimonial carousel. The page is around 230 lines — second shortest after E — because every section that does not earn its keep on a 6-inch screen has been removed.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A BD lead is between meetings at JPM Healthcare and scans a QR code at a booth. The page loads on her phone in under two seconds, the hero gives her the elevator pitch, and the four quick-action tiles let her tap into the agent that interests her most. She starts a free trial from her phone before she walks back into her next meeting.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A research scientist receives a Slack DM from a colleague: "this looks useful." He opens the link on his iPhone while waiting for a coffee. The bottom tab bar lets him scan Pulse, Search, and Account in turn — the same navigation pattern he uses in his other apps. He saves the page to read later on desktop.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> An executive on a Saturday afternoon clicks a link in a forwarded email. The page renders in compact form, the headline tells him what the product does, and he forwards the link to his head of strategy with "let's evaluate." He never has to zoom or scroll horizontally.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The header reduces to brand + Sign-in + hamburger menu. There is no top navigation on small viewports because horizontal nav competes with content. The hamburger menu is the convention the persona expects.</p>
+            <p>The hero is compact: 28px headline (smaller than other variants' 36px), three-line subtitle, and a full-width primary CTA. There are no stats in the hero because stats compete with the CTA on a small screen.</p>
+            <p>The four quick-action cards are the variant's idiomatic move. Two columns, each card carrying an icon, a one-line title, and a four-word description. The pattern is borrowed from how mobile native apps surface primary actions on a home screen — Apple's Wallet, Linear's mobile dashboard, the GitHub mobile app. Imitating the convention shortcuts the "is this for me on phone" judgment.</p>
+            <p>The feature section uses three stacked cards (rather than four or six) with short copy. Each card is fully visible without horizontal cropping at iPhone SE width.</p>
+            <p>The bottom tab bar persists as the user scrolls — Home, Search, Pulse, Account. This is a deliberate choice to mimic native-app navigation: the persona expects to be able to tap a tab from anywhere on the page, and providing that affordance reduces the perceived navigational depth.</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>QR codes:</strong> conference booths, printed collateral, business cards. <strong>Mobile email:</strong> any email that is more likely to be opened on phone than desktop should link to I. <strong>Slack / WhatsApp shared links:</strong> any peer-to-peer message that previews the link should preview Version I rather than the production page. <strong>Mobile retargeting:</strong> programmatic retargeting on mobile devices should preferentially serve I.</p>
+            <p>One non-obvious deployment: the email signature of every Eureka employee should link to Version I if recipients commonly open emails on phone. The mobile rendering of the production page in an Outlook preview pane is a missed first impression that I fixes for free.</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version I is the wrong page for desktop traffic. It deliberately strips proof, depth, and detail to fit a phone — on a 27-inch monitor, the page looks thin and undersells the product. Use device detection to route desktop visitors away from I.</p>
+            <p>It is also wrong for late-funnel evaluators on any device. The compactness that makes it work for scanning makes it inadequate for evaluation. A buyer comparing vendors needs more than the four quick-action tiles can convey. Route late-funnel evaluators to G or D.</p>
+        </article>
+
+        <article class="profile cyan" id="vj">
+            <header class="profile-header">
+                <div class="profile-mark">J</div>
+                <div class="profile-titles">
+                    <div class="profile-name">Version J — Academic Resources</div>
+                    <div class="profile-tagline">Library / academic procurement · publications + citation blocks</div>
+                </div>
+                <div class="profile-tags">
+                    <span class="tag tag-cyan">Academic</span>
+                    <span class="tag tag-gray">Procurement</span>
+                </div>
+            </header>
+
+            <h4>Persona portrait</h4>
+            <p>The reader works at the institutional layer of academia: a research librarian evaluating digital subscriptions, an academic procurement officer renewing a software portfolio, a postdoc preparing a citation block for a manuscript, or a department head considering a license for the entire group. They are different from Version C's persona (the individual academic researcher) in that they are buying for an organization, not for themselves. They are accountable to standards committees, not to grant deadlines.</p>
+            <p>What they fear: paying for something that cannot be cited; subscribing to a tool that disappears after the license expires; buying a tool that the faculty find unusable. What they trust: a clear citation block in three formats (APA, MLA, BibTeX), peer-reviewed publication evidence, an institutional partner list (Harvard, Stanford, MIT, Oxford), and a clearly labeled "academic access" path that signals "we do this routinely."</p>
+
+            <h4>Why this variant exists</h4>
+            <p>Version C is for the individual academic researcher who needs to evaluate methodology. Version J is for the institutional buyer who needs to evaluate licensing. The two pages overlap in tone and content sources but differ in structural emphasis: J leads with publications and ends with citation blocks, while C leads with methodology and ends with the data scale. Both have a place, but they target different stages of the academic adoption funnel.</p>
+            <p>The variant also exists because libraries and procurement teams use distinctive evaluation criteria. They scan for citation formats, partner institutions, downloadable whitepapers, and license inquiry paths. Version J makes all four of those scannable in the first two scrolls.</p>
+
+            <h4>User scenarios</h4>
+            <div class="scenario">
+                <strong>Scenario 1 —</strong> A research librarian at a mid-tier US research university is preparing the annual digital subscriptions review. A faculty member submitted a request to add Eureka. The librarian lands on Version J, sees that Harvard, MIT, and Stanford are listed as partners, finds the citation block in three formats, and forwards a recommendation to add the subscription.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 2 —</strong> A postdoc is finishing a methods section and needs to cite Eureka in APA format. They land on Version J, copy the APA citation block exactly, and paste it into their manuscript without modification. Three weeks later, the manuscript appears in <em>Drug Discovery Today</em> with the citation block as written.
+            </div>
+            <div class="scenario">
+                <strong>Scenario 3 —</strong> A department head at a Chinese pharmaceutical research institute is evaluating licensing options for the team. They land on Version J from a search. The institutional partner list includes Tsinghua, which signals that the platform has Chinese-academic users. They submit an institutional license inquiry.
+            </div>
+
+            <h4>Content rationale</h4>
+            <p>The hero is short and explicit ("Publications, methods, and citation-ready access for academic research"). The persona is not on the page to be educated about the product — they are here to verify that the product is institutionally legitimate. The hero makes that promise; the rest of the page keeps it.</p>
+            <p>The publications section (called "Peer-Reviewed Publications" in the eyebrow) shows four named publications with DOIs, BibTeX export buttons, and explicit journal names rendered in mono brand color. The DOI strings are real-looking strings (<span class="mono">10.1038/nbt.2024.0142</span>) — these would need to be verified before going live, but the format signals "this is a real citation."</p>
+            <p>The whitepapers section uses a list pattern (rather than a card grid) with PDF icons, file metadata ("PDF · 24 pages · January 2024"), and explicit Download buttons. This is the format library catalogs use, and the persona reads it as "this is a downloadable resource I can reference."</p>
+            <p>The citation block section is the most distinctive part of the variant. Three blocks rendered in mono on a tinted background, labeled APA / MLA / BibTeX. The BibTeX block uses indented code-block formatting that lets the persona copy-paste directly. No other variant has this section, and it is the single most important reason J exists separately from C.</p>
+            <p>The institutional partner wall uses twelve named institutions. The list is calibrated to span North America, Europe, and Asia, with a deliberate inclusion of Tsinghua to signal Chinese-academic relevance. The "+ 80 more" cell at the end is a deliberate signal that the named twelve are illustrative.</p>
+            <p>The CTA "Request academic access" is academically idiomatic — universities use this language for software licensing, and changing it to "Start free trial" would feel commercial in a way that signals "this vendor doesn't understand academia."</p>
+
+            <h4>Where to deploy</h4>
+            <p><strong>Library science newsletters:</strong> American Library Association digital subscriptions list; Academic Library Trends. <strong>Academic procurement portals:</strong> any consortium-purchasing platform listing Eureka should link to J. <strong>Publisher partnerships:</strong> co-marketing with Wiley, Elsevier, or Springer Nature where Eureka is referenced as methodology. <strong>Conference:</strong> ACS, AACR, Cold Spring Harbor — but as a leave-behind for procurement-focused attendees, not for individual researchers (those are Version C).</p>
+
+            <h4>Where it underperforms</h4>
+            <p>Version J is wrong for individual academic users with grant urgency. They want methodology depth and want to start using the tool immediately — Version C's structure suits them better. J is for the institutional buyer who needs to verify that the tool is legitimate, not for the user who needs to start running queries.</p>
+            <p>It is also wrong for industry buyers of any flavor. The academic framing reads as "this is a research tool, not a commercial tool" to a pharma procurement team, and the citation blocks are irrelevant to them. Route industry traffic to D, E, or G.</p>
+        </article>
+
+        <section id="s6">
+            <div class="section-num">SECTION 06</div>
+            <h2 class="section-title">Recommended A/B test design</h2>
+
+            <p>Having ten variants does not mean running a ten-way test. The most common failure mode for this kind of work is to ship all variants behind a flat traffic split, wait for "winners," and conclude nothing. This section explains why that approach fails and offers two designs that work.</p>
+
+            <h3>Why a flat ten-way split fails</h3>
+            <p>Two reasons. First, <strong>statistical power</strong>: splitting traffic ten ways means each variant receives one-tenth of the volume that a two-way A/B would receive. Reaching significance takes ten times longer; for any but the highest-traffic pages, this means the test never concludes within the planning horizon. Second, <strong>confounded variables</strong>: each variant differs from production in multiple dimensions (hero composition, section order, CTA copy, content emphasis). When B beats production, the lift could be attributable to any of those dimensions — there is no way to know which change drove the difference.</p>
+            <p>The honest version of a flat ten-way split is "we will pick whichever variant has the highest conversion at the end of the quarter and ship it." This is fine if the goal is incremental optimization. It is wrong if the goal is to learn what the audience actually wants — which is the implied goal of building ten variants in the first place.</p>
+
+            <div class="callout">
+                <strong>Researcher note —</strong> if leadership presses for a flat ten-way split, the right counter is to compute the required sample size for a 5% lift detection at 80% power. Most internal-tool landing pages will need months of traffic at 10% per variant. Show the math; the conclusion sells itself.
+            </div>
+
+            <h3>Approach 1 — Persona-routed (recommended)</h3>
+            <p>Bucket users into segments based on traffic source <em>before</em> they hit the page, then run small A/B tests inside each bucket. Each bucket gets a primary variant (matched to the segment from section 4) and the production page as control. Two variants per segment is enough to learn whether specialization beats consensus for that segment.</p>
+            <p>Routing logic should live at the redirect layer or in the Cloudflare worker, not inside the page itself. Examples:</p>
+            <ul class="bullets">
+                <li>Visitors from LinkedIn campaigns targeting "Director of Discovery" titles → 50% Version B, 50% production</li>
+                <li>Visitors from technical Slack or RDKit lists → 50% Version A, 50% production</li>
+                <li>Visitors from named-account ABM campaigns → 50% Version G, 50% production</li>
+                <li>Visitors from branded search ("eureka pricing") → 50% Version E, 50% production</li>
+                <li>Visitors from Hacker News, dev.to, or GitHub README links → 50% Version F, 50% production</li>
+                <li>Visitors from QR codes or mobile-detected devices → 50% Version I, 50% production</li>
+            </ul>
+            <p>The advantage of this approach is that each test is interpretable. If Version B beats production for LinkedIn-sourced biotech leads but Version F beats production for HN-sourced builders, both lifts are real and additive — and both can ship to production-segment routing without reverting the unified page.</p>
+            <p>The disadvantage is that the test only runs on segmented traffic, so untaggable visitors continue to see the production page. This is acceptable: the production page is a consensus message and the test does not need to address everyone.</p>
+
+            <h3>Approach 2 — Axis-isolated</h3>
+            <p>Pick two or three variants that move only one variable versus production, and run a clean three-way test. The goal here is causality: knowing which dimension drives lift, not just which page wins.</p>
+            <p>Suggested first-wave isolated tests:</p>
+            <ul class="bullets">
+                <li><strong>Test 1 — Specificity vs Generality.</strong> Production vs Version A vs Version B. Same audience (existing organic search traffic), different specialization angles (technical vs startup-energetic). Question answered: does specialization in either direction beat the consensus message for general traffic?</li>
+                <li><strong>Test 2 — Proof type.</strong> Version C (peer-reviewed) vs Version G (case-driven) vs production. Same late-funnel audience (visitors with two or more prior page views), different proof structures. Question answered: which evidence type converts late-funnel visitors faster?</li>
+                <li><strong>Test 3 — Pricing transparency.</strong> Production vs Version E. Same branded-search audience. Question answered: does putting pricing above the fold raise self-serve conversion?</li>
+            </ul>
+            <p>The advantage of axis-isolated testing is causal clarity. The disadvantage is that it leaves several variants un-tested in the first wave (D, F, H, I, J). The right resolution is to run Approach 1 in parallel for variants whose audience is clearly segmentable, and Approach 2 for variants whose audience overlaps with production traffic.</p>
+
+            <h3>What to ship first</h3>
+            <p>If only one test could ship in week one, run <strong>Test 3 above</strong> (production vs E for branded search). Branded-search traffic is the highest-intent segment; the change is small (one page) and reversible; the metric is unambiguous (self-serve Pro signups). A win here is fast, defensible, and immediately actionable.</p>
+            <p>If two tests could ship in week one, add the <strong>persona-routed test for LinkedIn biotech traffic</strong> (production vs Version B). LinkedIn is segmentable and high-volume; B is the variant with the most specialized message-market fit; and the metric (trial signups within 7 days) is clean.</p>
+
+            <h3>Metrics, by variant</h3>
+            <p>Each variant should be measured against a primary metric appropriate to its persona, not a single shared conversion event. Section 4 listed these per row; the consolidated framework is:</p>
+            <table>
+                <thead>
+                    <tr><th>Stage</th><th>Variants</th><th>Primary metric</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Self-serve trial</td><td>A, B, E, I</td><td>Trial signup → first agent run within 24h</td></tr>
+                    <tr><td>Enterprise demo</td><td>D, G</td><td>Demo booked → opportunity created in CRM</td></tr>
+                    <tr><td>Developer activation</td><td>F</td><td>API key issued → first authenticated request</td></tr>
+                    <tr><td>Analytics activation</td><td>H</td><td>Demo booked → dashboard activation rate</td></tr>
+                    <tr><td>Academic / institutional</td><td>C, J</td><td>Access requests / institutional license inquiries</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Guardrail metrics</h3>
+            <p>Every variant should also be tracked against two guardrails: <strong>bounce rate</strong> (signals when the variant has been served to the wrong audience) and <strong>scroll depth</strong> (signals when the structure is wrong for the audience even if they don't bounce). A variant that wins on conversion but spikes bounce rate is being served to traffic it should not see; the lesson is to tighten the routing, not to revert the variant.</p>
+
+            <h3>How long to run</h3>
+            <p>For each test, plan to reach the lesser of (a) statistical significance at 80% power for a 10% lift, or (b) two full marketing-cadence cycles (typically eight weeks). Running shorter risks day-of-week and campaign-driven noise; running longer turns the test into the new production page without explicit decision.</p>
+        </section>
+
+        <section id="s7">
+            <div class="section-num">SECTION 07</div>
+            <h2 class="section-title">Appendix</h2>
+
+            <h3>A · Design system compliance</h3>
+            <p>All ten variants ship against PatSnap Design System v5.12. The compliance matrix below confirms the key rules.</p>
+            <table>
+                <thead>
+                    <tr><th>Rule</th><th>Required</th><th>All variants</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Brand color</td><td><span class="mono">#0764E9</span></td><td>Primary action color across A–J</td></tr>
+                    <tr><td>Page background</td><td><span class="mono">#F4F5F7</span> light · <span class="mono">#020A1A</span> dark</td><td>A uses dark tokens; B–J use light tokens</td></tr>
+                    <tr><td>Card background</td><td><span class="mono">#FFFFFF</span> light · <span class="mono">#0D1B2E</span> dark</td><td>Compliant</td></tr>
+                    <tr><td>Text primary</td><td><span class="mono">#020A1A</span> — never pure black</td><td>Compliant</td></tr>
+                    <tr><td>Typography</td><td>Inter, weights 400/600 only</td><td>Compliant — no 300/500/700 used</td></tr>
+                    <tr><td>Mono typeface</td><td>JetBrains Mono / Fira Code</td><td>Used for numerics, IDs, code blocks</td></tr>
+                    <tr><td>Hero size cap</td><td>36px / lh 48px</td><td>Compliant; mobile (Version I) reduces to 28px</td></tr>
+                    <tr><td>Button radius</td><td>4px (rect) / 50% (full-round, sparingly)</td><td>4px on all buttons; no pill shapes</td></tr>
+                    <tr><td>Card radius</td><td>8px</td><td>Compliant</td></tr>
+                    <tr><td>Card shadow</td><td><span class="mono">0px 1px 2px rgba(2,10,26,0.04), 0px 4px 12px rgba(2,10,26,0.06)</span></td><td>Compliant — no decorative shadows</td></tr>
+                    <tr><td>Hover border</td><td><span class="mono">#82C3FF</span></td><td>Compliant on cards</td></tr>
+                    <tr><td>Focus ring</td><td><span class="mono">0 0 0 3px rgba(7,100,233,0.25)</span></td><td>Compliant via <span class="mono">:focus-visible</span></td></tr>
+                    <tr><td>Spacing grid</td><td>4px base</td><td>Compliant — all spacing on multiples of 4</td></tr>
+                    <tr><td>Chart palette</td><td>10-color palette (<span class="mono">#1976D2</span>…<span class="mono">#CA6B48</span>)</td><td>Compliant in Version H; semantic colors in A</td></tr>
+                    <tr><td>Semantic colors</td><td>Blue=action, green=success, orange=warning, red=error</td><td>Compliant — never repurposed</td></tr>
+                </tbody>
+            </table>
+
+            <h3>B · Glossary</h3>
+            <p>For non-biopharma readers (PMs and designers without bench backgrounds). Terms appear in the report and on the variants.</p>
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>Definition</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="mono">SAR</td><td>Structure-Activity Relationship. The relationship between a chemical compound's structure and its biological activity. Medicinal chemists optimize compounds by reading SAR tables.</td></tr>
+                    <tr><td class="mono">ADMET</td><td>Absorption, Distribution, Metabolism, Excretion, Toxicity. The five pharmacokinetic / pharmacodynamic properties evaluated to predict whether a candidate compound can become a drug.</td></tr>
+                    <tr><td class="mono">LogP</td><td>The logarithm of a compound's partition coefficient — how much it prefers fat over water. Affects absorption.</td></tr>
+                    <tr><td class="mono">TPSA</td><td>Topological Polar Surface Area. Predicts how easily a compound crosses cell membranes and the blood-brain barrier.</td></tr>
+                    <tr><td class="mono">hERG</td><td>A potassium ion channel that, if blocked by a drug candidate, can cause cardiac arrhythmia. A high hERG score is a red flag.</td></tr>
+                    <tr><td class="mono">HBD</td><td>Hydrogen Bond Donors. One of the Lipinski "rule of five" parameters for drug-likeness.</td></tr>
+                    <tr><td class="mono">CYP3A4</td><td>A liver enzyme that metabolizes many drugs. Inhibiting it causes drug-drug interactions.</td></tr>
+                    <tr><td class="mono">FTO</td><td>Freedom-to-Operate. The legal analysis confirming that practicing a technology will not infringe a third party's patent rights.</td></tr>
+                    <tr><td class="mono">FASTA / SDF / SMILES</td><td>Standard file formats for biological sequences (FASTA), chemical structures with metadata (SDF), and chemical structures as text strings (SMILES). The chemist's expected export targets.</td></tr>
+                    <tr><td class="mono">PK / PD</td><td>Pharmacokinetics — how a drug moves through the body. Pharmacodynamics — what the drug does to the body.</td></tr>
+                    <tr><td class="mono">NCT-style trial ID</td><td>The identifier format for clinical trials registered on ClinicalTrials.gov, e.g. <span class="mono">NCT05489289</span>.</td></tr>
+                    <tr><td class="mono">PI</td><td>Principal Investigator. The senior researcher who runs an academic lab and authors grants.</td></tr>
+                    <tr><td class="mono">KOL</td><td>Key Opinion Leader. A senior figure in a therapeutic area whose endorsement materially affects adoption.</td></tr>
+                    <tr><td class="mono">BD</td><td>Business Development. The function that scouts and structures partnerships, licenses, and acquisitions.</td></tr>
+                    <tr><td class="mono">21 CFR Part 11</td><td>FDA regulation governing electronic records and electronic signatures. Required for tools used in regulated R&amp;D.</td></tr>
+                    <tr><td class="mono">SOC 2</td><td>A security audit standard for service organizations. Type II adds a six- to twelve-month operational evidence period.</td></tr>
+                    <tr><td class="mono">RBAC</td><td>Role-Based Access Control. Permissioning that scales with organizational complexity.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>C · File index</h3>
+            <table>
+                <thead>
+                    <tr><th>File</th><th>Persona</th><th>Surface</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="version-a.html">version-a.html</a></td><td>Computational chemist</td><td>Dark mode</td></tr>
+                    <tr><td><a href="version-b.html">version-b.html</a></td><td>Young biotech R&amp;D lead</td><td>Light</td></tr>
+                    <tr><td><a href="version-c.html">version-c.html</a></td><td>Academic researcher (individual)</td><td>Light, centered</td></tr>
+                    <tr><td><a href="version-d.html">version-d.html</a></td><td>VP R&amp;D / BD lead (ROI)</td><td>Light</td></tr>
+                    <tr><td><a href="version-e.html">version-e.html</a></td><td>Time-poor mid-funnel buyer</td><td>Light, minimal</td></tr>
+                    <tr><td><a href="version-f.html">version-f.html</a></td><td>Builder / API consumer</td><td>Light + dark code blocks</td></tr>
+                    <tr><td><a href="version-g.html">version-g.html</a></td><td>Skeptical enterprise buyer</td><td>Light</td></tr>
+                    <tr><td><a href="version-h.html">version-h.html</a></td><td>Data scientist / analyst</td><td>Light + dashboards</td></tr>
+                    <tr><td><a href="version-i.html">version-i.html</a></td><td>Mobile / on-the-go user</td><td>Light, mobile-first</td></tr>
+                    <tr><td><a href="version-j.html">version-j.html</a></td><td>Academic / institutional buyer</td><td>Light</td></tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-N100); font-size: 12px; color: var(--color-N600);">End of report. Internal use only. Prepared for product, marketing, and design review. Print this page to PDF for distribution; the layout is print-optimized.</p>
+        </section>
+
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
